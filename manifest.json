@@ -1,0 +1,15 @@
+{
+  "name": "Maple Scheduler",
+  "short_name": "Maple Sch",
+  "description": "메이플스토리 보스/일퀘/주간퀘/에픽던전 스케줄러",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#e8e5df",
+  "theme_color": "#1f1f1f",
+  "lang": "ko",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}

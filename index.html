@@ -1,0 +1,748 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Maple Scheduler Prototype v8</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icon.svg" />
+  <meta name="theme-color" content="#1f1f1f" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Maple Scheduler" />
+  <style>
+    :root{
+      --bg:#e8e5df;
+      --card:#f3f0eb;
+      --ink:#1f1f1f;
+      --muted:#7c7871;
+      --soft:#d8d3ca;
+      --line:#d1ccc3;
+      --accent:#ff7a1a;
+      --bar:#ddd8cf;
+      --shadow:0 18px 42px rgba(32,30,27,.12);
+    }
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+    html,body{height:100%}
+    body{margin:0;background:#f5f5f4;color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Apple SD Gothic Neo","Noto Sans KR",sans-serif}
+    button,input,select{font:inherit;color:inherit}button{border:0;background:transparent;cursor:pointer;padding:0}
+    .app-shell{min-height:100dvh;display:flex;align-items:center;justify-content:center;padding:16px}
+    .phone{width:min(430px,100%);height:min(920px,100dvh - 20px);min-height:720px;background:var(--bg);border-radius:42px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.16);position:relative;display:flex;flex-direction:column}
+    .statusbar{height:42px;display:flex;align-items:end;justify-content:space-between;padding:0 28px 7px;font-weight:800;font-size:13px;letter-spacing:-.02em}.status-icons{display:flex;gap:6px;align-items:center;color:#111}.pill{width:24px;height:12px;border:2px solid #111;border-radius:6px;position:relative}.pill:after{content:"";position:absolute;right:2px;top:2px;width:5px;height:4px;background:#111;border-radius:2px}.signal{display:flex;gap:2px;align-items:end}.signal i{display:block;width:3px;background:#111;border-radius:2px}.signal i:nth-child(1){height:5px}.signal i:nth-child(2){height:7px}.signal i:nth-child(3){height:9px}.signal i:nth-child(4){height:11px}
+    .view{flex:1;min-height:0;padding:12px 22px 94px;overflow:auto;scrollbar-width:none}.view::-webkit-scrollbar{display:none}.topline{display:flex;align-items:center;justify-content:space-between;margin:0 0 16px}.brand{font-size:12px;font-weight:900;letter-spacing:.18em;color:var(--muted);text-transform:uppercase}.refresh{width:36px;height:36px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.2);display:grid;place-items:center;font-weight:900;color:#333}
+    .page{display:none}.page.on{display:block}
+    .home-select{padding-top:8px;margin-bottom:8px}.home-select .section-title{margin-top:0}
+
+    .hero{padding-top:2px}.selected-hero{display:grid;grid-template-columns:122px 1fr;gap:18px;align-items:end;margin-bottom:20px}.big-avatar{width:122px;height:122px;border-radius:38px;background:var(--accent);color:#fff;display:grid;place-items:center;font-size:54px;font-weight:950;letter-spacing:-.12em;box-shadow:0 18px 38px rgba(255,122,26,.2);transition:.18s transform ease}.big-avatar:active{transform:scale(.96)}.hero-copy{min-width:0;padding-bottom:4px}.hero-label{font-size:11px;color:var(--muted);font-weight:950;letter-spacing:.16em;text-transform:uppercase}.hero-name{font-size:36px;line-height:.92;font-weight:950;letter-spacing:-.08em;margin-top:8px}.hero-meta{font-size:12px;color:var(--muted);font-weight:850;margin-top:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.hero-count{font-size:34px;line-height:1;font-weight:950;letter-spacing:-.08em;margin-top:16px;color:var(--accent)}
+    .switcher{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:6px 0 20px}.switch-btn{height:64px;border-radius:23px;background:var(--ink);color:#eee;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;box-shadow:0 12px 24px rgba(31,31,31,.08);transition:.18s transform ease,.18s background ease}.switch-btn:active{transform:scale(.96)}.switch-btn.on{background:var(--accent);box-shadow:0 12px 24px rgba(255,122,26,.2)}.switch-key{width:28px;height:28px;border-radius:50%;position:relative;overflow:hidden;display:grid;place-items:center;background:rgba(255,255,255,.15);font-size:14px;font-weight:950;letter-spacing:-.1em}.switch-name{font-size:9px;font-weight:900;opacity:.74;letter-spacing:-.04em;max-width:46px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .selected-panel{position:relative;margin:2px 0 18px;border:1px solid rgba(210,205,196,.75);background:rgba(246,244,240,.62);border-radius:28px;padding:16px;box-shadow:0 14px 32px rgba(42,38,32,.06);overflow:hidden;animation:softIn .18s ease both}.selected-panel:before{content:"";position:absolute;right:-46px;top:-54px;width:132px;height:132px;border-radius:50%;background:rgba(255,122,26,.12);pointer-events:none}.selected-panel-head{display:flex;align-items:center;gap:14px;position:relative;z-index:1}.selected-mini-avatar{width:60px;height:60px;border-radius:22px;background:var(--accent);color:#fff;display:grid;place-items:center;font-size:26px;font-weight:950;letter-spacing:-.1em;box-shadow:0 12px 24px rgba(255,122,26,.15);flex:none;position:relative;overflow:hidden}.selected-copy{min-width:0;flex:1}.selected-label{font-size:10px;color:var(--muted);font-weight:950;letter-spacing:.16em;text-transform:uppercase}.selected-title-row{display:flex;align-items:end;justify-content:space-between;gap:10px;margin-top:4px}.selected-name{font-size:27px;line-height:1;font-weight:950;letter-spacing:-.08em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.selected-count{font-size:26px;line-height:1;font-weight:950;letter-spacing:-.08em;color:var(--accent);white-space:nowrap}.selected-meta{font-size:11px;color:var(--muted);font-weight:850;margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.selected-actions{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;margin-top:14px;position:relative;z-index:1}.selected-detail-btn{height:38px;border-radius:16px;background:var(--ink);color:#eee;font-size:12px;font-weight:950;letter-spacing:-.04em;padding:0 14px}.selected-money{font-size:12px;color:var(--muted);font-weight:950;white-space:nowrap}.selected-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;position:relative;z-index:1}
+    .bar{height:10px;background:var(--bar);border-radius:99px;margin-top:12px;overflow:hidden}.bar-fill{height:100%;width:50%;background:var(--ink);border-radius:99px}.hero .bar-fill,.char-card.active .bar-fill{background:var(--accent)}
+    .section-title{font-size:13px;font-weight:950;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin:24px 0 10px;display:flex;justify-content:space-between;align-items:center}.section-title b{color:var(--ink);font-size:12px;letter-spacing:-.03em;text-transform:none}
+    .char-list{display:flex;flex-direction:column;gap:10px}.char-card{position:relative;width:100%;text-align:left;background:rgba(246,244,240,.55);border:1px solid rgba(210,205,196,.65);border-radius:24px;padding:15px 16px;box-shadow:0 8px 18px rgba(42,38,32,.04)}.char-card:active{transform:translateY(1px)}.char-card.active{border-color:rgba(255,122,26,.5);box-shadow:0 12px 28px rgba(255,122,26,.08)}.char-main{display:flex;align-items:center;gap:12px}.avatar{width:46px;height:46px;border-radius:17px;background:var(--ink);color:#eee;display:grid;place-items:center;font-size:17px;font-weight:950;letter-spacing:-.08em;flex:none;overflow:hidden;position:relative}.avatar img,.selected-mini-avatar img,.switch-key img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 0%;transform:scale(2.6);transform-origin:top center}.char-card.active .avatar{background:var(--accent);color:#fff}.char-info{min-width:0;flex:1}.name-row{display:flex;justify-content:space-between;gap:10px;align-items:center}.nickname{font-size:18px;font-weight:950;letter-spacing:-.05em}.mini-meta{font-size:11px;color:var(--muted);font-weight:800;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.count{font-size:17px;font-weight:950;letter-spacing:-.06em}.char-card.active .count{color:var(--accent)}.char-open{display:block;text-align:left;min-width:0;flex:1;border-radius:18px;cursor:pointer}.nick-trigger{display:flex;align-items:center;gap:5px;max-width:170px;border-radius:12px;text-align:left}.nick-trigger .nickname{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.static-nick{cursor:pointer}.mini-arrow{font-size:13px;color:var(--muted);font-weight:950;line-height:1;transform:translateY(1px)}
+    .task-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}.chip,.state-tag{font-size:11px;font-weight:950;border-radius:999px;padding:6px 9px;border:1.5px solid transparent;letter-spacing:-.04em}.state-done{background:transparent;color:var(--ink);border-color:rgba(31,31,31,.5)}.state-doing{background:var(--accent);color:#fff;border-color:var(--accent)}.state-none{background:var(--ink);color:#eee;border-color:var(--ink)}
+    .legend{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:8px 0 16px}.legend-item{display:flex;align-items:center;gap:6px;font-size:10px;color:var(--muted);font-weight:900;letter-spacing:-.03em;white-space:nowrap}.legend-dot{width:12px;height:12px;border-radius:999px}.legend-dot.done{background:transparent;border:1.5px solid rgba(31,31,31,.6)}.legend-dot.doing{background:var(--accent)}.legend-dot.none{background:var(--ink)}
+    .expand-btn{width:34px;height:34px;border-radius:999px;background:rgba(255,255,255,.25);border:1px solid var(--line);font-size:17px;font-weight:950;color:var(--muted);flex:none;transition:.18s transform ease,.18s background ease}.expand-btn.open{background:var(--ink);color:#eee;border-color:var(--ink);transform:rotate(180deg)}.link-panel{display:none;margin-top:13px;border-radius:20px;border:1px solid var(--line);background:rgba(255,255,255,.26);padding:12px}.link-panel.show{display:block;animation:softIn .18s ease both}.link-title{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px}.link-title b{font-size:12px;font-weight:950;letter-spacing:-.04em}.link-title span{font-size:10px;color:var(--muted);font-weight:850}.tool-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}.tool-btn{height:38px;border-radius:14px;background:var(--ink);color:#eee;font-size:12px;font-weight:950;letter-spacing:-.04em;display:grid;place-items:center;box-shadow:0 8px 18px rgba(31,31,31,.08)}.tool-btn:nth-child(2),.tool-btn:nth-child(3),.tool-btn:nth-child(4){background:#e1dcd4;color:var(--ink);box-shadow:none}
+    .summary-card{background:rgba(246,244,240,.55);border:1px solid var(--line);border-radius:26px;padding:18px;margin-bottom:12px}.summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.metric{background:rgba(255,255,255,.24);border-radius:20px;padding:14px}.metric-label{font-size:11px;color:var(--muted);font-weight:850;letter-spacing:-.02em}.metric-value{font-size:23px;font-weight:950;letter-spacing:-.07em;margin-top:6px}.api-note{font-size:11px;line-height:1.55;color:var(--muted);font-weight:800;margin-top:12px;padding:12px 14px;border-radius:18px;background:rgba(255,255,255,.25)}
+    .boss-dashboard{display:flex;flex-direction:column;gap:10px}.boss-char-card{background:rgba(246,244,240,.55);border:1px solid rgba(210,205,196,.65);border-radius:24px;padding:15px}.boss-head{display:flex;align-items:center;justify-content:space-between;gap:10px}.boss-char-name{font-size:18px;font-weight:950;letter-spacing:-.06em}.boss-sub{font-size:11px;color:var(--muted);font-weight:850;margin-top:3px}.boss-tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:13px}.boss-list{display:flex;flex-direction:column;gap:8px;margin-top:14px}.boss-row{display:flex;align-items:center;justify-content:space-between;padding:12px 13px;border-radius:17px;background:rgba(255,255,255,.25);border:1px solid rgba(210,205,196,.55)}.boss-title{font-weight:950;letter-spacing:-.05em}.boss-price{font-weight:950;font-size:13px;color:var(--muted)}
+    .bottom-nav{position:absolute;left:16px;right:16px;bottom:16px;height:66px;background:rgba(242,239,234,.86);border:1px solid rgba(210,205,196,.75);border-radius:28px;backdrop-filter:blur(16px);display:grid;grid-template-columns:repeat(4,1fr);padding:7px;box-shadow:0 18px 40px rgba(28,25,20,.09)}.nav-btn{border-radius:22px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:10px;font-weight:900;color:var(--muted)}.nav-btn .nav-icon{font-size:18px;line-height:1}.nav-btn.on{background:var(--ink);color:#eee}
+    .sheet-dim{position:absolute;inset:0;background:rgba(17,17,17,.18);opacity:0;pointer-events:none;transition:.2s;z-index:8}.sheet-dim.show{opacity:1;pointer-events:auto}.sheet{position:absolute;left:0;right:0;bottom:0;background:#f4f1ec;border-radius:34px 34px 0 0;padding:16px 20px 28px;box-shadow:0 -28px 70px rgba(0,0,0,.2);transform:translateY(105%);transition:.26s cubic-bezier(.22,.9,.2,1);z-index:9;max-height:82%;overflow:auto;scrollbar-width:none}.sheet::-webkit-scrollbar{display:none}.sheet.show{transform:translateY(0)}.grab{width:48px;height:5px;border-radius:99px;background:#d3cec5;margin:0 auto 16px}.sheet-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}.sheet-name{font-size:28px;font-weight:950;letter-spacing:-.07em}.sheet-meta{font-size:12px;color:var(--muted);font-weight:850;margin-top:3px}.close{width:36px;height:36px;border-radius:999px;background:#e2ddd5;font-weight:950}.detail-progress{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;margin:14px 0 18px}.large-rate{font-size:42px;font-weight:950;letter-spacing:-.08em}.state-card{border:1px solid var(--line);background:rgba(255,255,255,.25);border-radius:23px;padding:14px;margin-bottom:10px}.state-top{display:flex;justify-content:space-between;gap:12px;align-items:center}.state-title{font-weight:950;letter-spacing:-.04em}.state-value{font-weight:950;color:var(--muted)}.state-list{margin-top:10px;display:flex;flex-direction:column;gap:7px}.state-item{display:flex;justify-content:space-between;gap:10px;font-size:12px;color:var(--muted);font-weight:850}.state-item b{color:var(--ink)}.badge{font-size:10px;font-weight:950;border-radius:999px;padding:5px 8px;background:var(--ink);color:#eee}.badge.done{background:transparent;color:var(--ink);border:1.5px solid rgba(31,31,31,.45)}.badge.doing{background:var(--accent);color:white;border:0}.badge.none{background:var(--ink);color:#eee;border:0}
+    .toast{position:absolute;left:50%;bottom:92px;transform:translate(-50%,12px);z-index:30;background:rgba(31,31,31,.92);color:#fff;border-radius:999px;padding:10px 14px;font-size:12px;font-weight:850;letter-spacing:-.03em;opacity:0;pointer-events:none;transition:.18s;white-space:nowrap}.toast.show{opacity:1;transform:translate(-50%,0)}
+    .switch-row{display:flex;align-items:center;justify-content:space-between;background:rgba(246,244,240,.55);border:1px solid var(--line);border-radius:22px;padding:15px 16px;margin-bottom:10px}.switch-label{font-weight:950;letter-spacing:-.04em}.switch-desc{font-size:11px;color:var(--muted);font-weight:800;margin-top:4px}.toggle{width:44px;height:26px;border-radius:999px;background:var(--ink);position:relative;flex:none}.toggle:after{content:"";position:absolute;right:3px;top:3px;width:20px;height:20px;background:#fff;border-radius:50%}
+    .field-row{display:flex;gap:8px;margin-bottom:10px}.field-input{flex:1;height:40px;border-radius:14px;border:1px solid var(--line);padding:0 13px;background:rgba(255,255,255,.5);font-weight:800}.field-input::placeholder{color:var(--muted)}.field-btn{height:40px;padding:0 16px;border-radius:14px;background:var(--ink);color:#eee;font-weight:950;font-size:13px;flex:none}.remove-char{width:28px;height:28px;border-radius:999px;background:#e2ddd5;font-weight:950;font-size:13px;flex:none}.sheet-refresh{width:36px;height:36px;border-radius:999px;background:#e2ddd5;font-weight:950;font-size:15px}.sheet-refresh.open{background:var(--accent);color:#fff}
+    .filter-tabs{display:flex;gap:6px;margin:10px 0 14px}.filter-tab{flex:1;height:34px;border-radius:13px;background:rgba(255,255,255,.35);border:1px solid var(--line);font-size:11px;font-weight:900;color:var(--muted)}.filter-tab.on{background:var(--ink);color:#eee;border-color:var(--ink)}.spin{display:inline-block;animation:spin 1s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+    @keyframes popIn{from{opacity:0;transform:scale(.96) translateY(-4px)}to{opacity:1;transform:scale(1) translateY(0)}}@keyframes softIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+    @media(max-width:440px){.app-shell{padding:0}.phone{height:100dvh;min-height:100dvh;border-radius:0;width:100%;box-shadow:none}.view{padding-left:20px;padding-right:20px}.selected-hero{grid-template-columns:112px 1fr;gap:16px}.big-avatar{width:112px;height:112px;border-radius:34px;font-size:50px}.hero-name{font-size:32px}.switch-btn{height:60px}}
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <main class="phone" aria-label="Maple Scheduler Prototype">
+      <div class="statusbar"><span id="clock">9:41</span><div class="status-icons"><div class="signal"><i></i><i></i><i></i><i></i></div><span style="font-size:12px;font-weight:950">⌁</span><div class="pill"></div></div></div>
+      <section class="view">
+        <div class="topline"><div class="brand">Maple Scheduler</div><button class="refresh" id="refreshBtn" title="새로고침">↻</button></div>
+
+        <div class="page on" id="homePage">
+          <div class="home-select">
+            <div class="section-title">Character Select <b>선택하면 아래 현황 변경</b></div>
+            <div class="switcher" id="characterSwitcher"></div>
+            <div class="selected-panel" id="selectedPanel"></div>
+            <div class="legend"><div class="legend-item"><i class="legend-dot done"></i>완료</div><div class="legend-item"><i class="legend-dot doing"></i>진행중</div><div class="legend-item"><i class="legend-dot none"></i>미시작</div></div>
+            <div class="tool-grid" id="quickLinks" style="grid-template-columns:repeat(3,1fr)"></div>
+          </div>
+          <div class="section-title">All Characters <b id="homeSummary">0/0 완료</b></div>
+          <div class="filter-tabs" id="homeFilterTabs">
+            <button type="button" class="filter-tab on" data-filter="all">전체</button>
+            <button type="button" class="filter-tab" data-filter="boss">보스</button>
+            <button type="button" class="filter-tab" data-filter="quest">퀘스트</button>
+            <button type="button" class="filter-tab" data-filter="underground">수로</button>
+          </div>
+          <div class="char-list" id="homeCharList"></div>
+        </div>
+
+        <div class="page" id="characterPage">
+          <div class="section-title" style="margin-top:8px">Character Scheduler <b>캐릭터별 조회</b></div>
+          <div class="summary-card">
+            <div class="summary-grid"><div class="metric"><div class="metric-label">오늘 체크 필요</div><div class="metric-value" id="needToday">0개</div></div><div class="metric"><div class="metric-label">이번 주 완료율</div><div class="metric-value" id="weekRate">0%</div></div></div>
+            <div class="api-note">캐릭터를 누르면 보스, 지하수로, 주간퀘, 에픽던전, 무릉도장 상태를 한 번에 보는 팝업이 열려요.</div>
+          </div>
+          <div class="char-list" id="characterList"></div>
+        </div>
+
+        <div class="page" id="bossPage">
+          <div class="section-title" style="margin-top:8px">Weekly Status <b>태그 기준 정리</b></div>
+          <div class="summary-card">
+            <div class="summary-grid"><div class="metric"><div class="metric-label">예상 수익</div><div class="metric-value" id="bossEarnTotal">0</div></div><div class="metric"><div class="metric-label">완료 수익</div><div class="metric-value" id="bossEarnDone">0</div></div></div>
+            <div class="api-note">가격은 넥슨 API에 없는 참고용 추정치예요. 완료 여부는 실제 게임 내 스케줄러 등록 항목만 반영돼요.</div>
+          </div>
+          <div id="epicSummary"></div>
+          <div id="monsterParkSummary"></div>
+          <div class="legend"><div class="legend-item"><i class="legend-dot done"></i>한 것</div><div class="legend-item"><i class="legend-dot doing"></i>진행중</div><div class="legend-item"><i class="legend-dot none"></i>미시작</div></div>
+          <div class="boss-dashboard" id="bossDashboard"></div>
+        </div>
+
+        <div class="page" id="settingsPage">
+          <div class="section-title" style="margin-top:8px">Settings <b>API 연결</b></div>
+          <div class="summary-card">
+            <div class="metric-label" style="margin-bottom:8px">Worker 계정 subdomain</div>
+            <div class="field-row"><input type="text" id="workerUrlInput" class="field-input" placeholder="hyunra94" autocomplete="off"><button type="button" id="saveWorkerUrl" class="field-btn">저장</button></div>
+            <div class="api-note" id="workerStatus">Worker 미설정 - 캐릭터 추가/새로고침이 동작하지 않아요.</div>
+          </div>
+          <div class="section-title">클라우드 저장 <b>기기 간 동기화</b></div>
+          <div class="summary-card">
+            <div class="field-row"><input type="text" id="syncCodeInput" class="field-input" placeholder="동기화 코드 (예: ab12cd34)" autocomplete="off"><button type="button" id="genSyncCode" class="field-btn">생성</button></div>
+            <div class="field-row"><button type="button" id="saveSyncBtn" class="field-btn" style="flex:1">이 기기 → 저장</button><button type="button" id="loadSyncBtn" class="field-btn" style="flex:1;background:#e1dcd4;color:var(--ink)">불러오기 → 이 기기</button></div>
+            <div class="api-note" id="syncStatus">코드를 한 번 저장해두면 이후 캐릭터 추가/삭제, 항목 숨기기를 할 때마다 자동으로 클라우드에 저장되고, 앱을 열 때마다 자동으로 최신 상태를 불러와요. 코드는 90일간 유지돼요.</div>
+          </div>
+          <div class="section-title">캐릭터 관리 <b id="settingsCharCount">0명</b></div>
+          <div class="summary-card">
+            <div class="field-row"><input type="text" id="newCharInput" class="field-input" placeholder="캐릭터 닉네임" autocomplete="off"><button type="button" id="addCharBtn" class="field-btn">추가</button></div>
+            <div class="char-list" id="settingsCharList"></div>
+            <div class="api-note">보스/일퀘/주간퀘/에픽던전은 각 캐릭터가 게임 내 &quot;메이플 스케줄러&quot;에 실제로 등록해둔 항목만 조회돼요. 등록 안 한 항목은 여기에도 나오지 않아요.</div>
+          </div>
+        </div>
+      </section>
+
+      <nav class="bottom-nav" aria-label="탭 메뉴">
+        <button class="nav-btn on" data-page="homePage"><span class="nav-icon">●</span><span>홈</span></button>
+        <button class="nav-btn" data-page="characterPage"><span class="nav-icon">◐</span><span>캐릭터</span></button>
+        <button class="nav-btn" data-page="bossPage"><span class="nav-icon">◌</span><span>보스</span></button>
+        <button class="nav-btn" data-page="settingsPage"><span class="nav-icon">○</span><span>설정</span></button>
+      </nav>
+
+      <div class="sheet-dim" id="sheetDim"></div>
+      <aside class="sheet" id="charSheet" aria-modal="true" role="dialog">
+        <div class="grab"></div>
+        <div class="sheet-head"><div><div class="sheet-name" id="sheetName">숍슈슈</div><div class="sheet-meta" id="sheetMeta">Lv. 275 비숍 · API 갱신 09:41</div></div><div style="display:flex;gap:8px"><button class="sheet-refresh" id="sheetEditToggle" style="width:auto;padding:0 14px;font-size:12px" title="숨김 항목 편집">편집</button><button class="sheet-refresh" id="sheetRefresh" title="이 캐릭터 새로고침">↻</button><button class="close" id="closeSheet">×</button></div></div>
+        <div class="detail-progress"><div><div class="large-rate" id="sheetRate">10/13</div><div class="mini-meta">전체 스케줄러 진행률</div></div><span class="state-tag state-doing" id="sheetBadge">진행중</span></div>
+        <div id="sheetStates"></div>
+      </aside>
+      <div class="toast" id="toast">바로가기</div>
+    </main>
+  </div>
+
+  <script>
+    const pad = n => String(n).padStart(2,'0');
+
+    // ---- Storage keys ----
+    const LS_CHARACTERS = 'maple-scheduler:characters'; // [{id, nick, ocid}]
+    const LS_WORKER_SUBDOMAIN = 'maple-scheduler:workerSubdomain';
+    const LS_CACHE = 'maple-scheduler:cache'; // { [id]: schedulerState }
+    const LS_DISABLED_ITEMS = 'maple-scheduler:disabledItems'; // { [charId]: ["category|name|difficulty", ...] }
+    const LS_SYNC_CODE = 'maple-scheduler:syncCode';
+    function getSyncCode(){ return localStorage.getItem(LS_SYNC_CODE)||''; }
+    function setSyncCode(v){ localStorage.setItem(LS_SYNC_CODE, (v||'').trim()); }
+    function generateSyncCode(){ const chars='abcdefghijklmnopqrstuvwxyz0123456789'; return Array.from({length:8},()=>chars[Math.floor(Math.random()*chars.length)]).join(''); }
+    const WORKER_NAME = 'mapleboss'; // Cloudflare Worker 이름 (workers.dev 앞부분)
+
+    function loadDisabledItems(){ try{ return JSON.parse(localStorage.getItem(LS_DISABLED_ITEMS))||{}; }catch{ return {}; } }
+    function saveDisabledItems(v){ localStorage.setItem(LS_DISABLED_ITEMS, JSON.stringify(v)); }
+    function itemKey(category,name,difficulty){ return `${category}|${name}|${difficulty||''}`; }
+    function isItemDisabled(charId,category,name,difficulty){ return (disabledItems[charId]||[]).includes(itemKey(category,name,difficulty)); }
+    function toggleItemDisabled(charId,category,name,difficulty){
+      const list = disabledItems[charId] = disabledItems[charId]||[];
+      const key = itemKey(category,name,difficulty);
+      const idx = list.indexOf(key);
+      if(idx>=0) list.splice(idx,1); else list.push(key);
+      saveDisabledItems(disabledItems);
+      renderAll();
+      scheduleAutoSave();
+    }
+    // cycle 필드 문자열이 실제로 어떻게 오는지 불확실해서, 확실히 월간인 보스는 이름으로도 고정 처리한다.
+    const KNOWN_MONTHLY_BOSSES = new Set(['검은 마법사']);
+    function isMonthlyBoss(b){ return KNOWN_MONTHLY_BOSSES.has(b.content_name) || /월|먼슬리|monthly/i.test(b.cycle||''); }
+
+    // 예전에 저장해둔 전체 URL이 있다면 subdomain만 뽑아서 새 키로 옮겨준다.
+    (function migrateWorkerUrl(){
+      const old = localStorage.getItem('maple-scheduler:workerUrl');
+      if(old && !localStorage.getItem(LS_WORKER_SUBDOMAIN)){
+        const sub = extractSubdomain(old);
+        if(sub) localStorage.setItem(LS_WORKER_SUBDOMAIN, sub);
+      }
+      if(old) localStorage.removeItem('maple-scheduler:workerUrl');
+    })();
+    function extractSubdomain(input){
+      input = (input||'').trim();
+      if(!input) return '';
+      const m = input.match(/^(?:https?:\/\/)?(?:[a-z0-9-]+\.)?([a-z0-9-]+)\.workers\.dev\/?$/i);
+      if(m) return m[1];
+      return input.replace(/^https?:\/\//,'').replace(/\/.*$/,'').split('.')[0];
+    }
+
+    // ---- Reference-only crystal price hints (Nexon API doesn't provide prices) ----
+    const BOSS_PRICE_HINTS = {
+      '스우_하드':110000000,'데미안_하드':100000000,'루시드_하드':120000000,'윌_하드':110000000,
+      '듄켈_하드':110000000,'더스크_노말':110000000,'힐라_노멀':140000000,'검은 마법사_하드':660000000,
+      '칼로스_하드':410000000,'카링_노멀':670000000,'세렌_하드':280000000,
+    };
+    function bossPriceHint(name, difficulty){
+      const key = Object.keys(BOSS_PRICE_HINTS).find(k=>k.startsWith(name)&&k.endsWith(difficulty));
+      return key ? BOSS_PRICE_HINTS[key] : null;
+    }
+    function money(n){
+      if(!n) return '-';
+      if(n>=100000000) return (Math.round(n/1000000)/100).toFixed(n%100000000===0?0:2).replace(/\.?0+$/,'')+'억';
+      if(n>=10000) return Math.round(n/10000)+'만';
+      return String(n);
+    }
+
+    function loadCharacters(){ try{ const v=JSON.parse(localStorage.getItem(LS_CHARACTERS)); return Array.isArray(v)?v:[]; }catch{ return []; } }
+    function saveCharacters(list){ localStorage.setItem(LS_CHARACTERS, JSON.stringify(list)); }
+    function loadCache(){ try{ return JSON.parse(localStorage.getItem(LS_CACHE))||{}; }catch{ return {}; } }
+    function saveCache(c){ localStorage.setItem(LS_CACHE, JSON.stringify(c)); }
+    function getWorkerSubdomain(){ return localStorage.getItem(LS_WORKER_SUBDOMAIN)||''; }
+    function setWorkerSubdomain(v){ localStorage.setItem(LS_WORKER_SUBDOMAIN, extractSubdomain(v)); }
+    function getWorkerUrl(){ const sub=getWorkerSubdomain(); return sub ? `https://${WORKER_NAME}.${sub}.workers.dev` : ''; }
+    function makeId(){ return 'c'+Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
+
+    let characters = loadCharacters();
+    let cache = loadCache();
+    let disabledItems = loadDisabledItems();
+    let selectedIndex = 0;
+    let homeFilter = 'all';
+    const expandedHomeCards = new Set();
+    const FILTER_GROUPS = {
+      all: ['주간보스','월간보스','일퀘','주간퀘','에픽던전','지하수로'],
+      boss: ['주간보스','월간보스'],
+      quest: ['일퀘','주간퀘','에픽던전'],
+      underground: ['지하수로'],
+    };
+    function filteredStates(c, filter){
+      const allowed = FILTER_GROUPS[filter]||FILTER_GROUPS.all;
+      return c.states.filter(s=>allowed.includes(s.title));
+    }
+    function toggleHomeExpand(id, idx){
+      selectedIndex = idx;
+      if(expandedHomeCards.has(id)) expandedHomeCards.delete(id); else expandedHomeCards.add(id);
+      renderAll();
+    }
+    const loadingIds = new Set();
+
+    const statusClassByRatio = (done,total) => total>0 && done === total ? 'state-done' : done > 0 ? 'state-doing' : 'state-none';
+    const statusTextByRatio = (done,total) => total>0 && done === total ? '완료' : done > 0 ? '진행중' : '미시작';
+    const statusClassByText = s => s.includes('완료') ? 'done' : s.includes('진행') ? 'doing' : 'none';
+    const chipClassByText = s => s.includes('완료') ? 'state-done' : s.includes('진행') ? 'state-doing' : 'state-none';
+    const truthy = v => v===true || v==='true';
+
+    // ---- API layer (talks to the Cloudflare Worker proxy, never to Nexon directly) ----
+    async function apiGet(path){
+      const base = getWorkerUrl();
+      if(!base) throw new Error('NO_WORKER');
+      const res = await fetch(`${base.replace(/\/$/,'')}${path}`);
+      const data = await res.json().catch(()=>({}));
+      if(!res.ok) throw new Error(data.error || `요청 실패 (${res.status})`);
+      return data;
+    }
+    async function apiPost(path, body){
+      const base = getWorkerUrl();
+      if(!base) throw new Error('NO_WORKER');
+      const res = await fetch(`${base.replace(/\/$/,'')}${path}`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
+      const data = await res.json().catch(()=>({}));
+      if(!res.ok) throw new Error(data.error || `요청 실패 (${res.status})`);
+      return data;
+    }
+    async function saveToCloud(silent=false){
+      const code = getSyncCode();
+      if(!code){ if(!silent) showToast('동기화 코드를 먼저 만들거나 입력하세요'); return; }
+      try{
+        await apiPost(`/api/sync?code=${encodeURIComponent(code)}`, { characters, disabledItems, workerSubdomain:getWorkerSubdomain() });
+        if(!silent) showToast('클라우드에 저장했어요');
+      }catch(e){
+        if(!silent) showToast(e.message==='NO_WORKER' ? 'Worker 주소를 먼저 설정하세요' : `저장 실패: ${e.message}`);
+      }
+    }
+    async function loadFromCloud(silent=false){
+      const code = getSyncCode();
+      if(!code){ if(!silent) showToast('동기화 코드를 먼저 입력하세요'); return; }
+      try{
+        const data = await apiGet(`/api/sync?code=${encodeURIComponent(code)}`);
+        characters = Array.isArray(data.characters) ? data.characters : [];
+        disabledItems = data.disabledItems && typeof data.disabledItems==='object' ? data.disabledItems : {};
+        cache = {};
+        saveCharacters(characters); saveDisabledItems(disabledItems); saveCache(cache);
+        if(data.workerSubdomain) setWorkerSubdomain(data.workerSubdomain);
+        selectedIndex = 0;
+        renderAll();
+        if(!silent) showToast('클라우드에서 불러왔어요');
+        refreshAll();
+      }catch(e){
+        if(e.message==='not found'){ if(!silent) showToast('불러오기 실패: 저장된 데이터가 없어요'); return; }
+        if(!silent) showToast(`불러오기 실패: ${e.message==='NO_WORKER'?'Worker 주소를 먼저 설정하세요':e.message}`);
+      }
+    }
+    let autoSaveTimer;
+    function scheduleAutoSave(){
+      if(!getSyncCode() || !getWorkerUrl()) return;
+      clearTimeout(autoSaveTimer);
+      autoSaveTimer = setTimeout(()=>saveToCloud(true), 800);
+    }
+    async function addCharacterByName(name){
+      name = (name||'').trim();
+      if(!name) return;
+      if(characters.some(c=>c.nick===name)){ showToast('이미 추가된 캐릭터예요'); return; }
+      try{
+        const data = await apiGet(`/api/character?name=${encodeURIComponent(name)}`);
+        const id = makeId();
+        characters.push({ id, nick:data.name, ocid:data.ocid, image:data.image||null });
+        saveCharacters(characters);
+        selectedIndex = characters.length-1;
+        renderAll();
+        showToast(`${data.name} 추가 완료`);
+        refreshCharacter(id);
+        scheduleAutoSave();
+      }catch(e){
+        showToast(e.message==='NO_WORKER' ? 'Worker 주소를 먼저 설정하세요' : `조회 실패: ${e.message}`);
+      }
+    }
+    async function refreshCharacter(id){
+      const base = characters.find(c=>c.id===id); if(!base) return;
+      loadingIds.add(id); renderAll();
+      try{
+        const data = await apiGet(`/api/scheduler?ocid=${encodeURIComponent(base.ocid)}`);
+        cache[id] = { ...data, fetchedAt:Date.now() };
+        saveCache(cache);
+      }catch(e){
+        showToast(`${base.nick} 새로고침 실패: ${e.message}`);
+      }finally{
+        loadingIds.delete(id); renderAll();
+      }
+    }
+    async function refreshAll(){
+      if(!characters.length) return;
+      if(!getWorkerUrl()){ showToast('Worker 주소를 먼저 설정하세요'); return; }
+      await Promise.all(characters.map(c=>refreshCharacter(c.id)));
+    }
+    function removeCharacter(id){
+      characters = characters.filter(c=>c.id!==id);
+      delete cache[id];
+      saveCharacters(characters); saveCache(cache);
+      if(selectedIndex>=characters.length) selectedIndex=Math.max(0,characters.length-1);
+      renderAll();
+      scheduleAutoSave();
+    }
+
+    // ---- Turn a raw scheduler-character-state response into the shape the renderers expect ----
+    function deriveChar(base){
+      const state = cache[base.id];
+      if(!state){
+        return { id:base.id, nick:base.nick, key:[...base.nick][0], image:base.image||null, level:'-', job: loadingIds.has(base.id)?'조회 중…':'조회 전', world:'-',
+          done:0, total:0, bosses:[], bossesMonthly:[], hiddenBosses:[], hiddenItems:[], states:[], earnedTotal:0, earnedDone:0, epicRaw:[], monsterPark:null, loading:loadingIds.has(base.id) };
+      }
+      const disabled = (category,name,difficulty) => isItemDisabled(base.id,category,name,difficulty);
+      const bossItemsRegistered = (state.bossContents||[]).filter(b=>truthy(b.registration_flag));
+      const bossItemsAll = bossItemsRegistered.filter(b=>!disabled('boss',b.content_name,b.difficulty));
+      const hiddenBossItems = bossItemsRegistered.filter(b=>disabled('boss',b.content_name,b.difficulty));
+      const weeklyBossItems = bossItemsAll.filter(b=>!isMonthlyBoss(b));
+      const monthlyBossItems = bossItemsAll.filter(b=>isMonthlyBoss(b));
+      function mapBoss(list){
+        return list.map(b=>[
+          `${b.content_name} ${b.difficulty||''}`.trim(),
+          truthy(b.complete_flag) ? '완료' : '미시작',
+          money(bossPriceHint(b.content_name, b.difficulty)),
+          b.content_name, b.difficulty||'',
+        ]);
+      }
+      const bosses = mapBoss(weeklyBossItems);
+      const bossesMonthly = mapBoss(monthlyBossItems);
+      const hiddenBosses = hiddenBossItems.map(b=>({ category:'boss', name:`${b.content_name} ${b.difficulty||''}`.trim(), contentName:b.content_name, difficulty:b.difficulty||'' }));
+
+      const dailyRegistered = (state.dailyContents||[]).filter(d=>truthy(d.registration_flag));
+      const dailyItems = dailyRegistered.filter(d=>!disabled('daily',d.content_name));
+      const hiddenDaily = dailyRegistered.filter(d=>disabled('daily',d.content_name));
+
+      const weeklyRawRegistered = (state.weeklyContents||[]).filter(w=>truthy(w.registration_flag));
+      const epicRegistered = weeklyRawRegistered.filter(w=>w.content_name && w.content_name.includes('에픽던전'));
+      const undergroundRegistered = weeklyRawRegistered.filter(w=>w.content_name && w.content_name.includes('지하수로'));
+      const weeklyRegistered = weeklyRawRegistered.filter(w=>!(w.content_name && (w.content_name.includes('에픽던전')||w.content_name.includes('지하수로'))));
+      const epicItems = epicRegistered.filter(w=>!disabled('epic',w.content_name));
+      const hiddenEpic = epicRegistered.filter(w=>disabled('epic',w.content_name));
+      const undergroundItems = undergroundRegistered.filter(w=>!disabled('underground',w.content_name));
+      const hiddenUnderground = undergroundRegistered.filter(w=>disabled('underground',w.content_name));
+      const weeklyItems = weeklyRegistered.filter(w=>!disabled('weekly',w.content_name));
+      const hiddenWeekly = weeklyRegistered.filter(w=>disabled('weekly',w.content_name));
+
+      function contentDoneText(item){
+        if(item.quest_state!=null) return item.quest_state==='2' ? '완료' : (item.quest_state==='1' ? '진행중' : '미시작');
+        return (item.max_count>0 && item.now_count>=item.max_count) ? '완료' : (item.now_count>0 ? '진행중' : '미시작');
+      }
+      function toStateGroup(title, items, category){
+        const doneCount = items.filter(i=>contentDoneText(i)==='완료').length;
+        return { title, done:doneCount, total:items.length, items: items.map(i=>[i.content_name, contentDoneText(i), category, i.content_name, '']) };
+      }
+      const states = [
+        { title:'주간보스', done:weeklyBossItems.filter(b=>truthy(b.complete_flag)).length, total:weeklyBossItems.length, items:bosses.map(([n,s,,cn,d])=>[n,s,'boss',cn,d]) },
+        { title:'월간보스', done:monthlyBossItems.filter(b=>truthy(b.complete_flag)).length, total:monthlyBossItems.length, items:bossesMonthly.map(([n,s,,cn,d])=>[n,s,'boss',cn,d]) },
+        toStateGroup('일퀘', dailyItems, 'daily'),
+        toStateGroup('주간퀘', weeklyItems, 'weekly'),
+        toStateGroup('에픽던전', epicItems, 'epic'),
+        toStateGroup('지하수로', undergroundItems, 'underground'),
+      ].filter(s=>s.total>0);
+
+      const done = states.reduce((a,s)=>a+s.done,0);
+      const total = states.reduce((a,s)=>a+s.total,0);
+      const earnedTotal = bossItemsAll.reduce((a,b)=>a+(bossPriceHint(b.content_name,b.difficulty)||0),0);
+      const earnedDone = bossItemsAll.filter(b=>truthy(b.complete_flag)).reduce((a,b)=>a+(bossPriceHint(b.content_name,b.difficulty)||0),0);
+      const monsterParkRaw = dailyItems.find(d=>d.content_name && d.content_name.includes('몬스터파크'));
+      const hiddenItems = [
+        ...hiddenBosses,
+        ...hiddenDaily.map(d=>({ category:'daily', name:d.content_name, contentName:d.content_name, difficulty:'' })),
+        ...hiddenWeekly.map(w=>({ category:'weekly', name:w.content_name, contentName:w.content_name, difficulty:'' })),
+        ...hiddenEpic.map(w=>({ category:'epic', name:w.content_name, contentName:w.content_name, difficulty:'' })),
+        ...hiddenUnderground.map(w=>({ category:'underground', name:w.content_name, contentName:w.content_name, difficulty:'' })),
+      ];
+
+      return {
+        id: base.id, nick: state.name||base.nick, key:[...(state.name||base.nick)][0], image:base.image||null,
+        level: state.level, job: state.job, world: state.world,
+        done, total, bosses, bossesMonthly, hiddenBosses, hiddenItems, states, earnedTotal, earnedDone,
+        epicRaw: epicItems.map(w=>({ name:w.content_name, done: contentDoneText(w)==='완료' })),
+        monsterPark: monsterParkRaw ? { now:monsterParkRaw.now_count, max:monsterParkRaw.max_count } : null,
+        loading: loadingIds.has(base.id), fetchedAt: state.fetchedAt,
+      };
+    }
+
+    function updateClock(){const d=new Date();document.getElementById('clock').textContent=`${d.getHours()}:${pad(d.getMinutes())}`;}
+    function selectedChar(){ return characters.length ? deriveChar(characters[Math.min(selectedIndex,characters.length-1)]) : null; }
+    function avatarHTML(c){ return c.image ? `${c.key}<img src="${c.image}" alt="" loading="lazy" onerror="this.remove()">` : c.key; }
+
+    // maplescouter.com 환산주스탯 바로가기 (홈 탭, 선택된 캐릭터 기준)
+    const MAPLESCOUTER_LINKS = [
+      { label:'보스', path:'result' },
+      { label:'장비', path:'info' },
+      { label:'스펙', path:'spec-order' },
+    ];
+    function renderQuickLinks(){
+      const wrap=document.getElementById('quickLinks'); if(!wrap) return;
+      const c=selectedChar();
+      if(!c){ wrap.innerHTML=''; return; }
+      wrap.innerHTML = MAPLESCOUTER_LINKS.map(({label,path})=>
+        `<a class="tool-btn" href="https://maplescouter.com/ko/${path}?name=${encodeURIComponent(c.nick)}&preset=00000" target="_blank" rel="noopener">${label}</a>`
+      ).join('');
+    }
+
+    function renderSwitcher(){
+      const wrap=document.getElementById('characterSwitcher'); wrap.innerHTML='';
+      if(!characters.length){ wrap.innerHTML='<div class="api-note" style="grid-column:1/-1">설정 탭에서 캐릭터를 추가해보세요.</div>'; return; }
+      characters.forEach((base,i)=>{
+        const c=deriveChar(base);
+        const b=document.createElement('button');
+        b.className='switch-btn'+(i===selectedIndex?' on':'');
+        b.innerHTML=`<span class="switch-key">${avatarHTML(c)}</span><span class="switch-name">${c.nick}</span>`;
+        b.addEventListener('click',()=>{selectedIndex=i; renderAll();});
+        wrap.appendChild(b);
+      });
+    }
+    function charCard(c, compact=false, idx=0){
+      const pct=c.total?Math.round(c.done/c.total*100):0;
+      const isActive=idx===selectedIndex;
+      const el=document.createElement('div');
+      el.className='char-card'+(isActive?' active':'');
+      el.innerHTML=`
+        <div class="char-main">
+          <div class="avatar" aria-hidden="true">${avatarHTML(c)}</div>
+          <div class="char-open" role="button" tabindex="0" aria-label="${c.nick} 스케줄러 상세 보기">
+            <div class="name-row">
+              <div class="nick-trigger static-nick"><span class="nickname">${c.nick}${c.loading?' <span class="spin">↻</span>':''}</span></div>
+              <div class="count">${c.done}/${c.total}</div>
+            </div>
+            <div class="mini-meta">Lv. ${c.level} ${c.job} · ${c.world||'-'}</div>
+            <div class="bar"><div class="bar-fill" style="width:${pct}%"></div></div>
+          </div>
+        </div>
+        ${compact?'' : `<div class="task-chips">${c.states.length? c.states.map(s=>`<span class="chip ${statusClassByRatio(s.done,s.total)}">${s.title} ${s.done}/${s.total}</span>`).join('') : '<span class="chip state-none">등록된 항목 없음</span>'}</div>`}
+      `;
+      const opener=el.querySelector('.char-open');
+      opener.addEventListener('click',()=>{selectedIndex=idx;renderAll();openSheet(c);});
+      opener.addEventListener('keydown',(e)=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();selectedIndex=idx;renderAll();openSheet(c);}});
+      if(compact){el.querySelector('.avatar').addEventListener('click',(e)=>{e.stopPropagation();selectedIndex=idx;renderAll();openSheet(c);});}
+      return el;
+    }
+    // 홈 탭 전용: 팝업 대신 눌렀을 때 인라인으로 펼쳐지는 카드. 필터(전체/보스/퀘스트/수로)에 따라 보이는 항목이 달라진다.
+    function homeCharCard(c, idx){
+      const groups = filteredStates(c, homeFilter);
+      const done = groups.reduce((a,s)=>a+s.done,0);
+      const total = groups.reduce((a,s)=>a+s.total,0);
+      const pct = total?Math.round(done/total*100):0;
+      const isActive = idx===selectedIndex;
+      const expanded = expandedHomeCards.has(c.id);
+      const el=document.createElement('div');
+      el.className='char-card'+(isActive?' active':'');
+      el.innerHTML=`
+        <div class="char-main">
+          <div class="avatar" aria-hidden="true">${avatarHTML(c)}</div>
+          <div class="char-open" role="button" tabindex="0" aria-label="${c.nick} 항목 펼치기">
+            <div class="name-row">
+              <div class="nick-trigger static-nick"><span class="nickname">${c.nick}${c.loading?' <span class="spin">↻</span>':''}</span></div>
+              <div class="count">${done}/${total}</div>
+            </div>
+            <div class="mini-meta">Lv. ${c.level} ${c.job} · ${c.world||'-'}</div>
+            <div class="bar"><div class="bar-fill" style="width:${pct}%"></div></div>
+          </div>
+          <button class="expand-btn${expanded?' open':''}" type="button" aria-label="펼치기">⌄</button>
+        </div>
+        <div class="link-panel${expanded?' show':''}">
+          ${groups.length ? groups.map(s=>{
+            const spct=s.total?Math.round(s.done/s.total*100):0;
+            return `<div class="state-card" style="margin-bottom:8px"><div class="state-top"><div><div class="state-title">${s.title}</div><div class="bar"><div class="bar-fill" style="width:${spct}%"></div></div></div><div class="state-value">${s.done}/${s.total}</div></div><div class="state-list">${s.items.map(([name,state])=>`<div class="state-item"><b>${name}</b><span class="badge ${statusClassByText(state)}">${state}</span></div>`).join('')}</div></div>`;
+          }).join('') : '<div class="api-note">등록된 항목이 없어요.</div>'}
+        </div>
+      `;
+      const toggle=()=>toggleHomeExpand(c.id, idx);
+      const opener=el.querySelector('.char-open');
+      opener.addEventListener('click', toggle);
+      opener.addEventListener('keydown',(e)=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle();}});
+      el.querySelector('.avatar').addEventListener('click',(e)=>{e.stopPropagation();toggle();});
+      el.querySelector('.expand-btn').addEventListener('click',(e)=>{e.stopPropagation();toggle();});
+      return el;
+    }
+    function renderSelectedPanel(){
+      const panel=document.getElementById('selectedPanel');
+      if(!panel) return;
+      const c=selectedChar();
+      if(!c){ panel.innerHTML='<div class="api-note">설정 탭에서 캐릭터를 추가하면 여기에 표시돼요.</div>'; return; }
+      const pct=c.total?Math.round(c.done/c.total*100):0;
+      panel.innerHTML=`
+        <div class="selected-panel-head">
+          <div class="selected-mini-avatar">${avatarHTML(c)}</div>
+          <div class="selected-copy">
+            <div class="selected-label">Selected Character</div>
+            <div class="selected-title-row"><div class="selected-name">${c.nick}</div><div class="selected-count">${c.done}/${c.total}</div></div>
+            <div class="selected-meta">Lv. ${c.level} ${c.job} · ${c.world||'-'} · ${statusTextByRatio(c.done,c.total)}</div>
+            <div class="bar"><div class="bar-fill" style="width:${pct}%;background:var(--accent)"></div></div>
+          </div>
+        </div>
+        <div class="selected-tags">${c.states.length? c.states.map(s=>`<span class="chip ${statusClassByRatio(s.done,s.total)}">${s.title} ${s.done}/${s.total}</span>`).join('') : '<span class="chip state-none">등록된 항목 없음</span>'}</div>
+        <div class="selected-actions"><button class="selected-detail-btn" type="button" style="grid-column:1/-1">상세 팝업 보기</button></div>
+      `;
+      panel.querySelector('.selected-detail-btn').addEventListener('click',()=>openSheet(c));
+      panel.querySelector('.selected-panel-head').addEventListener('click',()=>openSheet(c));
+    }
+
+    function renderCharacters(){
+      const home=document.getElementById('homeCharList'), list=document.getElementById('characterList'); home.innerHTML=''; list.innerHTML='';
+      if(!characters.length){
+        const note='<div class="api-note">캐릭터가 없어요. 설정 탭에서 추가해보세요.</div>';
+        home.innerHTML=note; list.innerHTML=note;
+        document.getElementById('homeSummary').textContent='0/0 완료';
+        document.getElementById('needToday').textContent='0개';
+        document.getElementById('weekRate').textContent='0%';
+        return;
+      }
+      const derived=characters.map(deriveChar);
+      derived.forEach((c,i)=>{home.appendChild(homeCharCard(c,i)); list.appendChild(charCard(c,false,i));});
+
+      let filteredDone=0, filteredTotal=0;
+      derived.forEach(c=>{ const g=filteredStates(c,homeFilter); filteredDone+=g.reduce((a,s)=>a+s.done,0); filteredTotal+=g.reduce((a,s)=>a+s.total,0); });
+      document.getElementById('homeSummary').textContent=`${filteredDone}/${filteredTotal} 완료`;
+
+      const done=derived.reduce((a,c)=>a+c.done,0), total=derived.reduce((a,c)=>a+c.total,0);
+      document.getElementById('needToday').textContent=`${total-done}개`;
+      document.getElementById('weekRate').textContent=`${total?Math.round(done/total*100):0}%`;
+    }
+    function renderHomeFilterTabs(){
+      document.querySelectorAll('#homeFilterTabs .filter-tab').forEach(btn=>{
+        btn.classList.toggle('on', btn.dataset.filter===homeFilter);
+      });
+    }
+    function bossRowHTML(charId,name,state,price,contentName,difficulty){
+      return `<div class="boss-row"><div><div class="boss-title">${name}</div><div class="boss-sub"><span class="state-tag ${chipClassByText(state)}" style="display:inline-block;margin-top:3px">${state}</span></div></div><div style="display:flex;align-items:center;gap:8px"><div class="boss-price">${price}</div><button type="button" class="remove-char" data-disable-char="${charId}" data-disable-name="${contentName}" data-disable-diff="${difficulty}" title="이 보스 비활성화">−</button></div></div>`;
+    }
+    function renderBossDashboard(){
+      const dash=document.getElementById('bossDashboard'); dash.innerHTML='';
+      if(!characters.length){
+        dash.innerHTML='<div class="api-note">캐릭터가 없어요. 설정 탭에서 추가해보세요.</div>';
+        document.getElementById('bossEarnTotal').textContent='0';
+        document.getElementById('bossEarnDone').textContent='0';
+        return;
+      }
+      let earnedTotal=0, earnedDone=0;
+      characters.forEach((base,i)=>{
+        const c=deriveChar(base);
+        earnedTotal+=c.earnedTotal; earnedDone+=c.earnedDone;
+        const card=document.createElement('div'); card.className='boss-char-card';
+        card.innerHTML=`
+          <div class="boss-head"><div><div class="boss-char-name">${c.nick}</div><div class="boss-sub">Lv. ${c.level} ${c.job} · ${c.done}/${c.total}</div></div><button class="avatar" type="button">${avatarHTML(c)}</button></div>
+          <div class="boss-tags">${c.states.length? c.states.map(s=>`<span class="state-tag ${statusClassByRatio(s.done,s.total)}">${s.title} · ${statusTextByRatio(s.done,s.total)}</span>`).join('') : '<span class="state-tag state-none">등록된 항목 없음</span>'}</div>
+          <div class="boss-list">${c.bosses.map(b=>bossRowHTML(c.id,...b)).join('')}</div>
+          ${c.bossesMonthly.length?`<div class="boss-sub" style="margin-top:12px;font-weight:950;color:var(--ink)">월간보스</div><div class="boss-list">${c.bossesMonthly.map(b=>bossRowHTML(c.id,...b)).join('')}</div>`:''}
+          ${c.hiddenBosses.length?`<div class="boss-sub" style="margin-top:12px;font-weight:950;color:var(--muted)">비활성화됨</div><div class="boss-list">${c.hiddenBosses.map(h=>`<div class="boss-row" style="opacity:.55"><div class="boss-title">${h.name}</div><button type="button" class="remove-char" data-enable-char="${c.id}" data-enable-name="${h.contentName}" data-enable-diff="${h.difficulty}" title="다시 표시">+</button></div>`).join('')}</div>`:''}
+        `;
+        card.querySelector('.avatar').addEventListener('click',()=>{selectedIndex=i;renderAll();});
+        dash.appendChild(card);
+      });
+      document.getElementById('bossEarnTotal').textContent=money(earnedTotal);
+      document.getElementById('bossEarnDone').textContent=money(earnedDone);
+      renderBossExtras();
+    }
+    function renderBossExtras(){
+      const epicWrap=document.getElementById('epicSummary'), mpWrap=document.getElementById('monsterParkSummary');
+      if(!epicWrap||!mpWrap) return;
+      if(!characters.length){ epicWrap.innerHTML=''; mpWrap.innerHTML=''; return; }
+      const derived=characters.map(deriveChar);
+
+      const epicMap=new Map();
+      derived.forEach(c=>c.epicRaw.forEach(e=>{ epicMap.set(e.name, (epicMap.get(e.name)||false) || e.done); }));
+      const epicEntries=[...epicMap.entries()];
+      epicWrap.innerHTML = epicEntries.length ? `<div class="summary-card"><div class="metric-label">에픽던전 현황 (계정 기준, 캐릭터 중 1명이라도 완료하면 완료 처리) · ${epicEntries.filter(([,d])=>d).length}/${epicEntries.length}</div><div class="task-chips" style="margin-top:10px">${epicEntries.map(([name,d])=>`<span class="chip ${d?'state-done':'state-none'}">${name}</span>`).join('')}</div></div>` : '';
+
+      const byWorld=new Map();
+      derived.forEach(c=>{ if(c.monsterPark && c.world && c.world!=='-'){
+        const cur=byWorld.get(c.world)||{now:0,max:0};
+        cur.now+=c.monsterPark.now; cur.max+=c.monsterPark.max;
+        byWorld.set(c.world,cur);
+      }});
+      const worldEntries=[...byWorld.entries()];
+      mpWrap.innerHTML = worldEntries.length ? `<div class="summary-card"><div class="metric-label">서버별 몬스터파크 클리어 (등록 캐릭터 합산)</div><div class="task-chips" style="margin-top:10px">${worldEntries.map(([w,v])=>`<span class="chip state-doing">${w} ${v.now}/${v.max}</span>`).join('')}</div></div>` : '';
+    }
+
+    function renderSettingsCharList(){
+      const wrap=document.getElementById('settingsCharList'); if(!wrap) return;
+      wrap.innerHTML='';
+      document.getElementById('settingsCharCount').textContent=`${characters.length}명`;
+      if(!characters.length){ wrap.innerHTML='<div class="api-note">아직 추가된 캐릭터가 없어요.</div>'; return; }
+      characters.forEach(base=>{
+        const c=deriveChar(base);
+        const row=document.createElement('div'); row.className='char-card';
+        row.innerHTML=`
+          <div class="char-main">
+            <div class="avatar">${avatarHTML(c)}</div>
+            <div class="char-info">
+              <div class="name-row"><div class="nickname">${c.nick}</div></div>
+              <div class="mini-meta">Lv. ${c.level} ${c.job} · ${c.world||'-'}</div>
+            </div>
+            <button type="button" class="remove-char" title="삭제">×</button>
+          </div>
+        `;
+        row.querySelector('.remove-char').addEventListener('click',()=>{
+          if(confirm(`${c.nick} 캐릭터를 삭제할까요?`)) removeCharacter(c.id);
+        });
+        wrap.appendChild(row);
+      });
+    }
+    function renderWorkerStatus(){
+      const el=document.getElementById('workerStatus'); if(!el) return;
+      const url=getWorkerUrl();
+      el.textContent = url ? `Worker 연결됨: ${url}` : 'Worker 미설정 - 캐릭터 추가/새로고침이 동작하지 않아요.';
+    }
+
+    let toastTimer; function showToast(msg){const toast=document.getElementById('toast');toast.textContent=msg;toast.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.classList.remove('show'),1300);}
+
+    let openSheetId=null;
+    let sheetEditMode=false;
+    function openSheet(c){
+      openSheetId=c.id;
+      document.getElementById('sheetName').textContent=c.nick;
+      document.getElementById('sheetMeta').textContent=`Lv. ${c.level} ${c.job} · ${c.fetchedAt? 'API 갱신 '+new Date(c.fetchedAt).toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'}) : '아직 조회 전'}`;
+      document.getElementById('sheetRate').textContent=`${c.done}/${c.total}`;
+      const badge=document.getElementById('sheetBadge'); badge.textContent=statusTextByRatio(c.done,c.total); badge.className='state-tag '+statusClassByRatio(c.done,c.total);
+      renderSheetStates(c);
+      document.getElementById('sheetDim').classList.add('show'); document.getElementById('charSheet').classList.add('show');
+    }
+    function renderSheetStates(c){
+      const editBtn=document.getElementById('sheetEditToggle');
+      if(editBtn) editBtn.classList.toggle('open', sheetEditMode);
+      const states=document.getElementById('sheetStates'); states.innerHTML='';
+      if(!c.states.length && !(sheetEditMode && c.hiddenItems.length)){
+        states.innerHTML='<div class="api-note">이 캐릭터는 게임 내 메이플 스케줄러에 등록된 항목이 없거나, 아직 조회하지 않았어요.</div>';
+        return;
+      }
+      c.states.forEach(s=>{
+        const pct=s.total?Math.round(s.done/s.total*100):0; const card=document.createElement('div'); card.className='state-card';
+        card.innerHTML=`<div class="state-top"><div><div class="state-title">${s.title}</div><div class="bar"><div class="bar-fill" style="width:${pct}%"></div></div></div><div class="state-value">${s.done}/${s.total}</div></div><div class="state-list">${s.items.map(([name,state,category,contentName,difficulty])=>`<div class="state-item"><b>${name}</b><span style="display:flex;align-items:center;gap:7px"><span class="badge ${statusClassByText(state)}">${state}</span>${sheetEditMode?`<button type="button" class="remove-char" data-hide-char="${c.id}" data-hide-cat="${category}" data-hide-name="${contentName}" data-hide-diff="${difficulty}" title="숨기기">−</button>`:''}</span></div>`).join('')}</div>`;
+        states.appendChild(card);
+      });
+      if(sheetEditMode && c.hiddenItems.length){
+        const card=document.createElement('div'); card.className='state-card'; card.style.opacity='.55';
+        card.innerHTML=`<div class="state-title" style="margin-bottom:8px">숨긴 항목</div><div class="state-list">${c.hiddenItems.map(h=>`<div class="state-item"><b>${h.name}</b><button type="button" class="remove-char" data-show-char="${c.id}" data-show-cat="${h.category}" data-show-name="${h.contentName}" data-show-diff="${h.difficulty}" title="다시 표시">+</button></div>`).join('')}</div>`;
+        states.appendChild(card);
+      }
+    }
+    function closeSheet(){document.getElementById('sheetDim').classList.remove('show');document.getElementById('charSheet').classList.remove('show');openSheetId=null;sheetEditMode=false;}
+    function renderAll(){renderSwitcher();renderSelectedPanel();renderQuickLinks();renderHomeFilterTabs();renderCharacters();renderBossDashboard();renderSettingsCharList();renderWorkerStatus();}
+
+    document.querySelectorAll('.nav-btn').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('on'));btn.classList.add('on');document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));document.getElementById(btn.dataset.page).classList.add('on');}));
+    document.getElementById('closeSheet').addEventListener('click',closeSheet); document.getElementById('sheetDim').addEventListener('click',closeSheet);
+    document.getElementById('refreshBtn').addEventListener('click',()=>{document.getElementById('refreshBtn').animate([{transform:'rotate(0deg)'},{transform:'rotate(360deg)'}],{duration:500});refreshAll();});
+    document.getElementById('sheetRefresh').addEventListener('click', async ()=>{
+      if(!openSheetId) return;
+      await refreshCharacter(openSheetId);
+      const base=characters.find(x=>x.id===openSheetId);
+      if(base) openSheet(deriveChar(base));
+    });
+    document.getElementById('sheetEditToggle').addEventListener('click', ()=>{
+      if(!openSheetId) return;
+      sheetEditMode=!sheetEditMode;
+      const base=characters.find(x=>x.id===openSheetId);
+      if(base) renderSheetStates(deriveChar(base));
+    });
+    document.getElementById('sheetStates').addEventListener('click', e=>{
+      const hide=e.target.closest('[data-hide-char]');
+      if(hide){ toggleItemDisabled(hide.dataset.hideChar, hide.dataset.hideCat, hide.dataset.hideName, hide.dataset.hideDiff); const base=characters.find(x=>x.id===hide.dataset.hideChar); if(base) renderSheetStates(deriveChar(base)); return; }
+      const show=e.target.closest('[data-show-char]');
+      if(show){ toggleItemDisabled(show.dataset.showChar, show.dataset.showCat, show.dataset.showName, show.dataset.showDiff); const base=characters.find(x=>x.id===show.dataset.showChar); if(base) renderSheetStates(deriveChar(base)); return; }
+    });
+
+    document.getElementById('workerUrlInput').value=getWorkerSubdomain();
+    document.getElementById('saveWorkerUrl').addEventListener('click',()=>{
+      setWorkerSubdomain(document.getElementById('workerUrlInput').value);
+      document.getElementById('workerUrlInput').value=getWorkerSubdomain();
+      renderWorkerStatus();
+      showToast('Worker 주소 저장됨');
+    });
+    document.getElementById('syncCodeInput').value=getSyncCode();
+    document.getElementById('syncCodeInput').addEventListener('change', e=>{ setSyncCode(e.target.value); });
+    document.getElementById('genSyncCode').addEventListener('click', ()=>{
+      const code=generateSyncCode();
+      document.getElementById('syncCodeInput').value=code;
+      setSyncCode(code);
+      showToast('코드 생성됨 - "이 기기 → 저장"을 눌러주세요');
+    });
+    document.getElementById('saveSyncBtn').addEventListener('click', ()=>saveToCloud());
+    document.getElementById('loadSyncBtn').addEventListener('click', ()=>loadFromCloud());
+    document.getElementById('addCharBtn').addEventListener('click', async ()=>{
+      const input=document.getElementById('newCharInput');
+      await addCharacterByName(input.value);
+      input.value='';
+    });
+    document.getElementById('newCharInput').addEventListener('keydown', e=>{ if(e.key==='Enter') document.getElementById('addCharBtn').click(); });
+    document.getElementById('bossDashboard').addEventListener('click', e=>{
+      const dis=e.target.closest('[data-disable-char]');
+      if(dis){ toggleItemDisabled(dis.dataset.disableChar, 'boss', dis.dataset.disableName, dis.dataset.disableDiff); return; }
+      const en=e.target.closest('[data-enable-char]');
+      if(en){ toggleItemDisabled(en.dataset.enableChar, 'boss', en.dataset.enableName, en.dataset.enableDiff); return; }
+    });
+    document.getElementById('homeFilterTabs').addEventListener('click', e=>{
+      const btn=e.target.closest('[data-filter]'); if(!btn) return;
+      homeFilter=btn.dataset.filter;
+      renderAll();
+    });
+
+    updateClock(); setInterval(updateClock,1000*30);
+    renderAll();
+    if('serviceWorker' in navigator){
+      window.addEventListener('load', ()=>{ navigator.serviceWorker.register('sw.js').catch(()=>{}); });
+    }
+    if(getSyncCode() && getWorkerUrl()){ loadFromCloud(true); }
+    else if(characters.length && getWorkerUrl()){ refreshAll(); }
+  </script>
+</body>
+</html>
