@@ -498,7 +498,9 @@
     function renderSwitcher(){
       const wrap=document.getElementById('characterSwitcher'); wrap.innerHTML='';
       if(!characters.length){ wrap.innerHTML='<div class="api-note" style="grid-column:1/-1">설정 탭에서 캐릭터를 추가해보세요.</div>'; return; }
-      characters.forEach((base,i)=>{
+      const visible = characters.map((base,i)=>({base,i})).filter(({base})=>base.showInSwitcher!==false);
+      if(!visible.length){ wrap.innerHTML='<div class="api-note" style="grid-column:1/-1">캐릭터 선택에 표시된 캐릭터가 없어요. 설정 탭에서 켜보세요.</div>'; return; }
+      visible.forEach(({base,i})=>{
         const c=deriveChar(base);
         const b=document.createElement('button');
         b.className='switch-btn'+(i===selectedIndex?' on':'');
@@ -506,6 +508,13 @@
         b.addEventListener('click',()=>{selectedIndex=i; renderAll();});
         wrap.appendChild(b);
       });
+    }
+    function toggleSwitcherVisibility(id){
+      const base = characters.find(c=>c.id===id); if(!base) return;
+      base.showInSwitcher = base.showInSwitcher===false ? true : false;
+      saveCharacters(characters);
+      renderAll();
+      scheduleAutoSave();
     }
     function charCard(c, compact=false, idx=0){
       const pct=c.total?Math.round(c.done/c.total*100):0;
@@ -696,6 +705,7 @@
       characters.forEach(base=>{
         const c=deriveChar(base);
         const row=document.createElement('div'); row.className='char-card';
+        const shown = base.showInSwitcher!==false;
         row.innerHTML=`
           <div class="char-main">
             <div class="avatar"${avatarBgAttr(c)}>${avatarText(c)}</div>
@@ -703,12 +713,14 @@
               <div class="name-row"><div class="nickname">${c.nick}</div></div>
               <div class="mini-meta">Lv. ${c.level} ${c.job} · ${c.world||'-'}</div>
             </div>
+            <button type="button" class="chip ${shown?'state-doing':'state-none'}" data-switcher-toggle="${c.id}" style="flex:none">${shown?'선택 표시중':'선택 숨김'}</button>
             <button type="button" class="remove-char" title="삭제">×</button>
           </div>
         `;
         row.querySelector('.remove-char').addEventListener('click',()=>{
           if(confirm(`${c.nick} 캐릭터를 삭제할까요?`)) removeCharacter(c.id);
         });
+        row.querySelector('[data-switcher-toggle]').addEventListener('click',()=>{ toggleSwitcherVisibility(c.id); });
         wrap.appendChild(row);
       });
     }
