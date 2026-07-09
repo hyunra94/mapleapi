@@ -39,13 +39,15 @@
     .bar{height:10px;background:var(--bar);border-radius:99px;margin-top:12px;overflow:hidden}.bar-fill{height:100%;width:50%;background:var(--ink);border-radius:99px}.hero .bar-fill,.char-card.active .bar-fill{background:var(--accent)}
     .section-title{font-size:13px;font-weight:950;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin:24px 0 10px;display:flex;justify-content:space-between;align-items:center}.section-title b{color:var(--ink);font-size:12px;letter-spacing:-.03em;text-transform:none}
     .char-list{display:flex;flex-direction:column;gap:10px}.char-card{position:relative;width:100%;text-align:left;background:rgba(246,244,240,.55);border:1px solid rgba(210,205,196,.65);border-radius:24px;padding:15px 16px;box-shadow:0 8px 18px rgba(42,38,32,.04)}.char-card:active{transform:translateY(1px)}.char-card.active{border-color:rgba(255,122,26,.5);box-shadow:0 12px 28px rgba(255,122,26,.08)}.char-main{display:flex;align-items:center;gap:12px}.avatar{width:104px;height:104px;border-radius:32px;background:var(--ink);color:#eee;display:grid;place-items:center;font-size:34px;font-weight:950;letter-spacing:-.08em;flex:none;overflow:hidden;position:relative}.avatar,.selected-mini-avatar,.switch-key{background-size:220%;background-position:42% 57%;background-repeat:no-repeat}.char-card.active .avatar{background-color:var(--accent);color:#fff}.char-info{min-width:0;flex:1}.name-row{display:flex;justify-content:space-between;gap:10px;align-items:center}.nickname{font-size:18px;font-weight:950;letter-spacing:-.05em}.mini-meta{font-size:11px;color:var(--muted);font-weight:800;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.count{font-size:17px;font-weight:950;letter-spacing:-.06em}.char-card.active .count{color:var(--accent)}.char-open{display:block;text-align:left;min-width:0;flex:1;border-radius:18px;cursor:pointer}.nick-trigger{display:flex;align-items:center;gap:5px;max-width:170px;border-radius:12px;text-align:left}.nick-trigger .nickname{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.static-nick{cursor:pointer}.mini-arrow{font-size:13px;color:var(--muted);font-weight:950;line-height:1;transform:translateY(1px)}
-    .task-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}.chip,.state-tag{font-size:11px;font-weight:950;border-radius:999px;padding:6px 9px;border:1.5px solid transparent;letter-spacing:-.04em}.state-done{background:transparent;color:var(--ink);border-color:rgba(31,31,31,.5)}.state-doing{background:var(--accent);color:#fff;border-color:var(--accent)}.state-none{background:var(--ink);color:#eee;border-color:var(--ink)}
-    .legend{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:8px 0 16px}.legend-item{display:flex;align-items:center;gap:6px;font-size:10px;color:var(--muted);font-weight:900;letter-spacing:-.03em;white-space:nowrap}.legend-dot{width:12px;height:12px;border-radius:999px}.legend-dot.done{background:transparent;border:1.5px solid rgba(31,31,31,.6)}.legend-dot.doing{background:var(--accent)}.legend-dot.none{background:var(--ink)}
-    .expand-btn{width:34px;height:34px;border-radius:999px;background:rgba(255,255,255,.25);border:1px solid var(--line);font-size:17px;font-weight:950;color:var(--muted);flex:none;transition:.18s transform ease,.18s background ease}.expand-btn.open{background:var(--ink);color:#eee;border-color:var(--ink);transform:rotate(180deg)}.link-panel{display:none;margin-top:13px;border-radius:20px;border:1px solid var(--line);background:rgba(255,255,255,.26);padding:12px}.link-panel.show{display:block;animation:softIn .18s ease both}.link-title{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px}.link-title b{font-size:12px;font-weight:950;letter-spacing:-.04em}.link-title span{font-size:10px;color:var(--muted);font-weight:850}.tool-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}.tool-btn{height:38px;border-radius:14px;background:var(--ink);color:#eee;font-size:12px;font-weight:950;letter-spacing:-.04em;display:grid;place-items:center;box-shadow:0 8px 18px rgba(31,31,31,.08)}.tool-btn:nth-child(2),.tool-btn:nth-child(3),.tool-btn:nth-child(4){background:#e1dcd4;color:var(--ink);box-shadow:none}
+    .char-line{display:flex;align-items:baseline;gap:8px}.char-line .nickname{font-size:16px;font-weight:950;letter-spacing:-.04em;flex:none}.char-sub{flex:1;min-width:0;font-size:11px;color:var(--muted);font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.char-line .count{font-size:14px;font-weight:950;letter-spacing:-.05em;flex:none}.char-card.active .char-line .count{color:var(--accent)}.bar.thin{height:5px;margin-top:8px}
+    .task-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}.chip,.state-tag{font-size:11px;font-weight:950;border-radius:999px;padding:6px 9px;border:1.5px solid transparent;letter-spacing:-.04em}.state-done{background:var(--ink);color:#eee;border-color:var(--ink)}.state-doing{background:var(--accent);color:#fff;border-color:var(--accent)}.state-none{background:transparent;color:var(--ink);border-color:rgba(31,31,31,.5)}
+    .legend{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:8px 0 16px}.legend-item{display:flex;align-items:center;gap:6px;font-size:10px;color:var(--muted);font-weight:900;letter-spacing:-.03em;white-space:nowrap}.legend-dot{width:12px;height:12px;border-radius:999px}.legend-dot.done{background:var(--ink)}.legend-dot.doing{background:var(--accent)}.legend-dot.none{background:transparent;border:1.5px solid rgba(31,31,31,.6)}
+    .expand-btn{width:34px;height:34px;border-radius:999px;background:rgba(255,255,255,.25);border:1px solid var(--line);font-size:17px;font-weight:950;color:var(--muted);flex:none;transition:.18s transform ease,.18s background ease}.expand-btn.open{background:var(--ink);color:#eee;border-color:var(--ink);transform:rotate(180deg)}.link-panel{display:none;margin-top:13px;border-radius:20px;border:1px solid var(--line);background:rgba(255,255,255,.26);padding:12px}.link-panel.show{display:block;animation:softIn .18s ease both}.link-title{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px}.link-title b{font-size:12px;font-weight:950;letter-spacing:-.04em}.link-title span{font-size:10px;color:var(--muted);font-weight:850}.tool-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}.tool-btn{height:38px;border-radius:14px;background:var(--ink);color:#eee;font-size:12px;font-weight:950;letter-spacing:-.04em;display:grid;place-items:center;box-shadow:0 8px 18px rgba(31,31,31,.08)}.tool-btn:nth-child(2),.tool-btn:nth-child(3),.tool-btn:nth-child(4){background:#e1dcd4;color:var(--ink);box-shadow:none}#quickLinks .tool-btn{background:#8a7157;color:#fff;box-shadow:none}
     .summary-card{background:rgba(246,244,240,.55);border:1px solid var(--line);border-radius:26px;padding:18px;margin-bottom:12px}.summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.metric{background:rgba(255,255,255,.24);border-radius:20px;padding:14px}.metric-label{font-size:11px;color:var(--muted);font-weight:850;letter-spacing:-.02em}.metric-value{font-size:23px;font-weight:950;letter-spacing:-.07em;margin-top:6px}.api-note{font-size:11px;line-height:1.55;color:var(--muted);font-weight:800;margin-top:12px;padding:12px 14px;border-radius:18px;background:rgba(255,255,255,.25)}
-    .boss-dashboard{display:flex;flex-direction:column;gap:14px}.boss-char-card{background:rgba(246,244,240,.7);border:1.5px solid rgba(210,205,196,.85);border-radius:24px;padding:15px;box-shadow:0 6px 16px rgba(42,38,32,.05)}.boss-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-bottom:12px;border-bottom:1px solid rgba(210,205,196,.6)}.boss-head-info{flex:1;min-width:0;cursor:pointer;border-radius:12px}.boss-char-name{font-size:18px;font-weight:950;letter-spacing:-.06em}.boss-sub{font-size:11px;color:var(--muted);font-weight:850;margin-top:3px}.boss-collapse-btn{width:32px;height:32px;border-radius:999px;background:rgba(255,255,255,.4);border:1px solid var(--line);font-size:13px;font-weight:950;color:var(--muted);flex:none;transition:.18s transform ease,.18s background ease}.boss-collapse-btn.open{transform:rotate(180deg);background:var(--ink);color:#eee;border-color:var(--ink)}.boss-body{display:none}.boss-body.show{display:block}.boss-tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:13px}.boss-list{display:flex;flex-direction:column;gap:8px;margin-top:14px}.boss-row{display:flex;align-items:center;justify-content:space-between;padding:12px 13px;border-radius:17px;background:rgba(255,255,255,.35);border:1px solid rgba(210,205,196,.55)}.boss-title{font-weight:950;letter-spacing:-.05em}.boss-price{font-weight:950;font-size:13px;color:var(--muted)}
+    .boss-dashboard{display:flex;flex-direction:column;gap:14px}.boss-char-card{background:rgba(246,244,240,.7);border:1.5px solid rgba(210,205,196,.85);border-radius:24px;padding:15px;box-shadow:0 6px 16px rgba(42,38,32,.05)}.boss-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-bottom:12px;border-bottom:1px solid rgba(210,205,196,.6)}.boss-head-info{flex:1;min-width:0;cursor:pointer;border-radius:12px}.boss-char-name{font-size:18px;font-weight:950;letter-spacing:-.06em}.boss-sub{font-size:11px;color:var(--muted);font-weight:850;margin-top:3px}.boss-collapse-btn{width:32px;height:32px;border-radius:999px;background:rgba(255,255,255,.4);border:1px solid var(--line);font-size:13px;font-weight:950;color:var(--muted);flex:none;transition:.18s transform ease,.18s background ease}.boss-collapse-btn.open{transform:rotate(180deg);background:var(--ink);color:#eee;border-color:var(--ink)}.boss-body{display:none}.boss-body.show{display:block}.boss-list{display:flex;flex-direction:column;gap:8px;margin-top:14px}.boss-row{display:flex;align-items:center;justify-content:space-between;padding:12px 13px;border-radius:17px;background:rgba(255,255,255,.35);border:1px solid rgba(210,205,196,.55)}.boss-title{font-weight:950;letter-spacing:-.05em}.boss-price{font-weight:950;font-size:13px;color:var(--muted)}
     .bottom-nav{position:absolute;left:16px;right:16px;bottom:16px;height:66px;background:rgba(242,239,234,.86);border:1px solid rgba(210,205,196,.75);border-radius:28px;backdrop-filter:blur(16px);display:grid;grid-template-columns:repeat(4,1fr);padding:7px;box-shadow:0 18px 40px rgba(28,25,20,.09)}.nav-btn{border-radius:22px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:10px;font-weight:900;color:var(--muted)}.nav-btn .nav-icon{font-size:18px;line-height:1}.nav-btn.on{background:var(--ink);color:#eee}
-    .sheet-dim{position:absolute;inset:0;background:rgba(17,17,17,.18);opacity:0;pointer-events:none;transition:.2s;z-index:8}.sheet-dim.show{opacity:1;pointer-events:auto}.sheet{position:absolute;left:0;right:0;bottom:0;background:#f4f1ec;border-radius:34px 34px 0 0;padding:16px 20px 28px;box-shadow:0 -28px 70px rgba(0,0,0,.2);transform:translateY(105%);transition:.26s cubic-bezier(.22,.9,.2,1);z-index:9;max-height:82%;overflow:auto;scrollbar-width:none}.sheet::-webkit-scrollbar{display:none}.sheet.show{transform:translateY(0)}.grab{width:48px;height:5px;border-radius:99px;background:#d3cec5;margin:0 auto 16px}.sheet-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}.sheet-name{font-size:28px;font-weight:950;letter-spacing:-.07em}.sheet-meta{font-size:12px;color:var(--muted);font-weight:850;margin-top:3px}.close{width:36px;height:36px;border-radius:999px;background:#e2ddd5;font-weight:950}.detail-progress{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;margin:14px 0 18px}.large-rate{font-size:42px;font-weight:950;letter-spacing:-.08em}.state-card{border:1px solid var(--line);background:rgba(255,255,255,.25);border-radius:23px;padding:14px;margin-bottom:10px}.state-top{display:flex;justify-content:space-between;gap:12px;align-items:center}.state-title{font-weight:950;letter-spacing:-.04em}.state-value{font-weight:950;color:var(--muted)}.state-list{margin-top:10px;display:flex;flex-direction:column;gap:7px}.state-item{display:flex;justify-content:space-between;gap:10px;font-size:12px;color:var(--muted);font-weight:850}.state-item b{color:var(--ink)}.badge{font-size:10px;font-weight:950;border-radius:999px;padding:5px 8px;background:var(--ink);color:#eee}.badge.done{background:transparent;color:var(--ink);border:1.5px solid rgba(31,31,31,.45)}.badge.doing{background:var(--accent);color:white;border:0}.badge.none{background:var(--ink);color:#eee;border:0}
+    .sheet-dim{position:absolute;inset:0;background:rgba(17,17,17,.18);opacity:0;pointer-events:none;transition:.2s;z-index:8}.sheet-dim.show{opacity:1;pointer-events:auto}.sheet{position:absolute;left:0;right:0;bottom:0;background:#f4f1ec;border-radius:34px 34px 0 0;padding:16px 20px 28px;box-shadow:0 -28px 70px rgba(0,0,0,.2);transform:translateY(105%);transition:.26s cubic-bezier(.22,.9,.2,1);z-index:9;max-height:82%;overflow:auto;scrollbar-width:none}.sheet::-webkit-scrollbar{display:none}.sheet.show{transform:translateY(0)}.grab{width:48px;height:5px;border-radius:99px;background:#d3cec5;margin:0 auto 16px}.sheet-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}.sheet-name{font-size:28px;font-weight:950;letter-spacing:-.07em}.sheet-meta{font-size:12px;color:var(--muted);font-weight:850;margin-top:3px}.close{width:36px;height:36px;border-radius:999px;background:#e2ddd5;font-weight:950}.detail-progress{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;margin:14px 0 18px}.large-rate{font-size:42px;font-weight:950;letter-spacing:-.08em}.state-card{border:1px solid var(--line);background:rgba(255,255,255,.25);border-radius:23px;padding:14px;margin-bottom:10px}.state-top{display:flex;justify-content:space-between;gap:12px;align-items:center}.state-title{font-weight:950;letter-spacing:-.04em}.state-value{font-weight:950;color:var(--muted)}.state-list{margin-top:10px;display:flex;flex-direction:column;gap:7px}.state-item{display:flex;justify-content:space-between;gap:10px;font-size:12px;color:var(--muted);font-weight:850}.state-item b{color:var(--ink)}.badge{font-size:10px;font-weight:950;border-radius:999px;padding:5px 8px;background:var(--ink);color:#eee}.badge.done{background:var(--ink);color:#eee;border:0}.badge.doing{background:var(--accent);color:white;border:0}.badge.none{background:transparent;color:var(--ink);border:1.5px solid rgba(31,31,31,.45)}
+    .quest-row{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;padding:9px 0}.quest-row-text{flex:1;min-width:0;font-size:12px;font-weight:850;color:var(--muted);line-height:1.5}.quest-row-text b{color:var(--ink);font-weight:950}.quest-row .badge{flex:none;margin-top:1px}.quest-divider{border-top:1px solid rgba(210,205,196,.6);margin:2px 0}
     .toast{position:absolute;left:50%;bottom:92px;transform:translate(-50%,12px);z-index:30;background:rgba(31,31,31,.92);color:#fff;border-radius:999px;padding:10px 14px;font-size:12px;font-weight:850;letter-spacing:-.03em;opacity:0;pointer-events:none;transition:.18s;white-space:nowrap}.toast.show{opacity:1;transform:translate(-50%,0)}
     .switch-row{display:flex;align-items:center;justify-content:space-between;background:rgba(246,244,240,.55);border:1px solid var(--line);border-radius:22px;padding:15px 16px;margin-bottom:10px}.switch-label{font-weight:950;letter-spacing:-.04em}.switch-desc{font-size:11px;color:var(--muted);font-weight:800;margin-top:4px}.toggle{width:44px;height:26px;border-radius:999px;background:var(--ink);position:relative;flex:none}.toggle:after{content:"";position:absolute;right:3px;top:3px;width:20px;height:20px;background:#fff;border-radius:50%}
     .field-row{display:flex;gap:8px;margin-bottom:10px}.field-input{flex:1;height:40px;border-radius:14px;border:1px solid var(--line);padding:0 13px;background:rgba(255,255,255,.5);font-weight:800}.field-input::placeholder{color:var(--muted)}.field-btn{height:40px;padding:0 16px;border-radius:14px;background:var(--ink);color:#eee;font-weight:950;font-size:13px;flex:none}.remove-char{width:28px;height:28px;border-radius:999px;background:#e2ddd5;font-weight:950;font-size:13px;flex:none}.sheet-refresh{width:36px;height:36px;border-radius:999px;background:#e2ddd5;font-weight:950;font-size:15px}.sheet-refresh.open{background:var(--accent);color:#fff}
@@ -65,13 +67,11 @@
             <div class="section-title">Character Select <b>선택하면 아래 현황 변경</b></div>
             <div class="switcher" id="characterSwitcher"></div>
             <div class="selected-panel" id="selectedPanel"></div>
-            <div class="legend"><div class="legend-item"><i class="legend-dot done"></i>완료</div><div class="legend-item"><i class="legend-dot doing"></i>진행중</div><div class="legend-item"><i class="legend-dot none"></i>미시작</div></div>
             <div class="tool-grid" id="quickLinks" style="grid-template-columns:repeat(3,1fr)"></div>
           </div>
           <div class="section-title">All Characters <b id="homeSummary">0/0 완료</b></div>
           <div class="filter-tabs" id="homeFilterTabs">
-            <button type="button" class="filter-tab on" data-filter="all">전체</button>
-            <button type="button" class="filter-tab" data-filter="boss">보스</button>
+            <button type="button" class="filter-tab on" data-filter="boss">보스</button>
             <button type="button" class="filter-tab" data-filter="quest">퀘스트</button>
             <button type="button" class="filter-tab" data-filter="underground">수로</button>
           </div>
@@ -91,11 +91,11 @@
         <div class="page" id="bossPage">
           <div class="section-title" style="margin-top:8px">Weekly Status <button type="button" id="bossEditToggle" class="sheet-refresh" style="width:auto;padding:0 14px;font-size:11px" title="숨긴 보스 편집">편집</button></div>
           <div class="summary-card">
-            <div class="summary-grid"><div class="metric"><div class="metric-label">예상 수익</div><div class="metric-value" id="bossEarnTotal">0</div></div><div class="metric"><div class="metric-label">완료 수익</div><div class="metric-value" id="bossEarnDone">0</div></div></div>
+            <div class="summary-grid"><div class="metric"><div class="metric-label">주간 예상·완료</div><div class="metric-value" id="bossEarnWeekly">0 · 0</div></div><div class="metric"><div class="metric-label">월간 예상·완료</div><div class="metric-value" id="bossEarnMonthly">0 · 0</div></div></div>
             <div class="api-note">가격은 넥슨 API에 없는 참고용 추정치예요. 완료 여부는 실제 게임 내 스케줄러 등록 항목만 반영돼요.</div>
           </div>
           <div id="epicSummary"></div>
-          <div class="legend"><div class="legend-item"><i class="legend-dot done"></i>한 것</div><div class="legend-item"><i class="legend-dot doing"></i>진행중</div><div class="legend-item"><i class="legend-dot none"></i>미시작</div></div>
+          <div class="legend"><div class="legend-item"><i class="legend-dot done"></i>완료</div><div class="legend-item"><i class="legend-dot doing"></i>진행중</div><div class="legend-item"><i class="legend-dot none"></i>미시작</div></div>
           <div class="boss-dashboard" id="bossDashboard"></div>
         </div>
 
@@ -166,9 +166,18 @@
       renderAll();
       scheduleAutoSave();
     }
-    // cycle 필드 문자열이 실제로 어떻게 오는지 불확실해서, 확실히 월간인 보스는 이름으로도 고정 처리한다.
+    // 넥슨 API가 난이도를 영어로 줄 때가 있어서 표시/가격조회/숨김 모두 한글로 통일해서 처리한다.
+    const DIFFICULTY_KO = { easy:'이지', normal:'노말', hard:'하드', chaos:'카오스', extreme:'익스트림' };
+    function toKoreanDifficulty(d){
+      if(!d) return d;
+      return DIFFICULTY_KO[String(d).trim().toLowerCase()] || d;
+    }
+    // cycle 필드 문자열이 실제로 어떻게 오는지 불확실해서, 확실히 월간/일간인 보스는 이름(+난이도)으로 고정 처리한다.
     const KNOWN_MONTHLY_BOSSES = new Set(['검은 마법사']);
-    function isMonthlyBoss(b){ return KNOWN_MONTHLY_BOSSES.has(b.content_name) || /월|먼슬리|monthly/i.test(b.cycle||''); }
+    // 원래 주간이었다가 일간 리셋으로 바뀐 보스들 - 이 앱에서는 아예 안 보이게 제외한다.
+    const KNOWN_DAILY_BOSSES = new Set(['시그너스_노말', '힐라_하드']);
+    function isMonthlyBoss(b){ return KNOWN_MONTHLY_BOSSES.has(b.content_name) || /월간|먼슬리|monthly/i.test(b.cycle||''); }
+    function isDailyBoss(b){ return KNOWN_DAILY_BOSSES.has(`${b.content_name}_${b.difficulty||''}`) || /일일|매일|daily/i.test(b.cycle||''); }
 
     // 예전에 저장해둔 전체 URL이 있다면 subdomain만 뽑아서 새 키로 옮겨준다.
     (function migrateWorkerUrl(){
@@ -187,14 +196,42 @@
       return input.replace(/^https?:\/\//,'').replace(/\/.*$/,'').split('.')[0];
     }
 
-    // ---- Reference-only crystal price hints (Nexon API doesn't provide prices) ----
+    // ---- Reference-only crystal price hints (Nexon API doesn't provide prices) - 사용자 제공 시세 반영 ----
     const BOSS_PRICE_HINTS = {
-      '스우_하드':110000000,'데미안_하드':100000000,'루시드_하드':120000000,'윌_하드':110000000,
-      '듄켈_하드':110000000,'더스크_노말':110000000,'힐라_노멀':140000000,'검은 마법사_하드':660000000,
-      '칼로스_하드':410000000,'카링_노멀':670000000,'세렌_하드':280000000,
+      '검은 마법사_익스트림':8740000000,'검은 마법사_하드':665000000,
+      '카링_익스트림':5387000000,'카링_하드':1739000000,'카링_노말':678000000,'카링_노멀':678000000,'카링_이지':377000000,
+      '유피테르_하드':4845000000,'유피테르_노말':1615000000,'유피테르_노멀':1615000000,
+      '최초의 대적자_익스트림':4712000000,'최초의 대적자_하드':1435000000,'최초의 대적자_노말':560000000,'최초의 대적자_노멀':560000000,'최초의 대적자_이지':308000000,
+      '감시자 칼로스_익스트림':4104000000,'감시자 칼로스_카오스':1273000000,'감시자 칼로스_노말':505000000,'감시자 칼로스_노멀':505000000,'감시자 칼로스_이지':280000000,
+      '발드릭스_하드':3078000000,'발드릭스_노말':1368000000,'발드릭스_노멀':1368000000,
+      '선택받은 세렌_익스트림':2835000000,'선택받은 세렌_하드':356000000,'선택받은 세렌_노말':239000000,'선택받은 세렌_노멀':239000000,
+      '찬란한 흉성_하드':2678000000,'찬란한 흉성_노말':625000000,'찬란한 흉성_노멀':625000000,
+      '림보_하드':2385000000,'림보_노말':1026000000,'림보_노멀':1026000000,
+      '메이린_하드':600000000,'메이린_노말':300000000,'메이린_노멀':300000000,
+      '스우_익스트림':574000000,'스우_하드':51500000,'스우_노말':16700000,'스우_노멀':16700000,
+      '진 힐라_하드':106000000,'진 힐라_노말':71200000,'진 힐라_노멀':71200000,
+      '듄켈_하드':94400000,'듄켈_노말':47500000,'듄켈_노멀':47500000,
+      '윌_하드':77100000,'윌_노말':41100000,'윌_노멀':41100000,'윌_이지':32300000,
+      '가디언 엔젤 슬라임_카오스':75100000,'가디언 엔젤 슬라임_노말':25500000,'가디언 엔젤 슬라임_노멀':25500000,
+      '더스크_카오스':69800000,'더스크_노말':44000000,'더스크_노멀':44000000,
+      '루시드_하드':62900000,'루시드_노말':35600000,'루시드_노멀':35600000,'루시드_이지':29800000,
+      '데미안_하드':48900000,'데미안_노말':17500000,'데미안_노멀':17500000,
+      '파풀라투스_카오스':13100000,
+      '벨룸_카오스':9280000,
+      '매그너스_하드':8560000,
+      '피에르_카오스':8150000,
+      '반반_카오스':8140000,
+      '블러디 퀸_카오스':8080000,
+      '자쿰_카오스':7500000,
     };
+    // 넥슨 API가 보스명 띄어쓰기를 다르게 줄 수 있어서(예: "블러디 퀸" vs "블러디퀸"), 공백을 무시하고 비교한다.
+    function normalizeBossKey(s){ return (s||'').replace(/\s+/g,''); }
     function bossPriceHint(name, difficulty){
-      const key = Object.keys(BOSS_PRICE_HINTS).find(k=>k.startsWith(name)&&k.endsWith(difficulty));
+      const wantPrefix = normalizeBossKey(name), wantSuffix = normalizeBossKey(difficulty);
+      const key = Object.keys(BOSS_PRICE_HINTS).find(k=>{
+        const nk = normalizeBossKey(k);
+        return nk.startsWith(wantPrefix) && nk.endsWith(wantSuffix);
+      });
       return key ? BOSS_PRICE_HINTS[key] : null;
     }
     function money(n){
@@ -217,7 +254,7 @@
     let cache = loadCache();
     let disabledItems = loadDisabledItems();
     let selectedIndex = 0;
-    let homeFilter = 'all';
+    let homeFilter = 'boss';
     const expandedHomeCards = new Set();
     const FILTER_GROUPS = {
       all: ['주간보스','월간보스','일퀘','주간퀘','에픽던전','지하수로'],
@@ -347,19 +384,23 @@
       if(!state){
         return { id:base.id, nick:base.nick, key:[...base.nick][0], image:base.image||null, level:'-', job: loadingIds.has(base.id)?'조회 중…':'조회 전', world:'-',
           done:0, total:0, bossDone:0, bossTotal:0, bosses:[], bossesMonthly:[], states:[], earnedTotal:0, earnedDone:0,
+          weeklyEarnedTotal:0, weeklyEarnedDone:0, monthlyEarnedTotal:0, monthlyEarnedDone:0,
           weeklyBossClearCount:0, weeklyBossClearLimitCount:null, weeklyBossCapped:false,
           epicRaw:[], monsterPark:null, loading:loadingIds.has(base.id) };
       }
       const disabled = (category,name,difficulty) => isItemDisabled(base.id,category,name,difficulty);
 
-      const bossItemsRegistered = (state.bossContents||[]).filter(b=>truthy(b.registration_flag));
+      // 게임 내 스케줄러에 등록한 순서(list_order_no)를 그대로 따른다.
+      const bossContentsKo = (state.bossContents||[]).map(b=>({ ...b, difficulty: toKoreanDifficulty(b.difficulty) }))
+        .sort((a,b)=>(a.list_order_no??0)-(b.list_order_no??0));
+      const bossItemsRegistered = bossContentsKo.filter(b=>truthy(b.registration_flag) && !isDailyBoss(b));
       const weeklyBossRegistered = bossItemsRegistered.filter(b=>!isMonthlyBoss(b));
       const monthlyBossRegistered = bossItemsRegistered.filter(b=>isMonthlyBoss(b));
       function mapBossFull(list){
         return list.map(b=>{
           const hidden = disabled('boss', b.content_name, b.difficulty);
           return [
-            `${b.content_name} ${b.difficulty||''}`.trim(),
+            `${b.difficulty||''} ${b.content_name}`.trim(),
             truthy(b.complete_flag) ? '완료' : '미시작',
             money(bossPriceHint(b.content_name, b.difficulty)),
             b.content_name, b.difficulty||'', hidden,
@@ -375,7 +416,7 @@
       // 등록해둔 나머지 보스가 아직 "미시작"이어도 이번 주 주간보스는 마무리된 것으로 취급한다.
       const weeklyBossClearCount = state.weeklyBossClearCount ?? 0;
       const weeklyBossClearLimitCount = state.weeklyBossClearLimitCount ?? null;
-      const weeklyBossCapped = weeklyBossClearLimitCount!=null && weeklyBossClearCount >= weeklyBossClearLimitCount;
+      const weeklyBossCapped = weeklyBossClearLimitCount!=null && weeklyBossClearLimitCount>0 && weeklyBossClearCount >= weeklyBossClearLimitCount;
       const weeklyBossDoneCount = weeklyBossCapped ? weeklyBossVisible.length : weeklyBossVisible.filter(b=>truthy(b.complete_flag)).length;
       const monthlyBossDoneCount = monthlyBossVisible.filter(b=>truthy(b.complete_flag)).length;
       const bossDone = weeklyBossDoneCount + monthlyBossDoneCount;
@@ -411,8 +452,13 @@
       const done = states.reduce((a,s)=>a+s.done,0);
       const total = states.reduce((a,s)=>a+s.total,0);
       const bossItemsVisible = [...weeklyBossVisible, ...monthlyBossVisible];
-      const earnedTotal = bossItemsVisible.reduce((a,b)=>a+(bossPriceHint(b.content_name,b.difficulty)||0),0);
-      const earnedDone = bossItemsVisible.filter(b=>truthy(b.complete_flag)).reduce((a,b)=>a+(bossPriceHint(b.content_name,b.difficulty)||0),0);
+      const priceSum = list => list.reduce((a,b)=>a+(bossPriceHint(b.content_name,b.difficulty)||0),0);
+      const weeklyEarnedTotal = priceSum(weeklyBossVisible);
+      const weeklyEarnedDone = priceSum(weeklyBossVisible.filter(b=>truthy(b.complete_flag)));
+      const monthlyEarnedTotal = priceSum(monthlyBossVisible);
+      const monthlyEarnedDone = priceSum(monthlyBossVisible.filter(b=>truthy(b.complete_flag)));
+      const earnedTotal = weeklyEarnedTotal + monthlyEarnedTotal;
+      const earnedDone = weeklyEarnedDone + monthlyEarnedDone;
       const monsterParkRaw = dailyRegistered.find(d=>d.content_name && d.content_name.includes('몬스터파크'));
       const epicVisible = epicRegistered.filter(w=>!disabled('epic',w.content_name));
 
@@ -420,6 +466,7 @@
         id: base.id, nick: state.name||base.nick, key:[...(state.name||base.nick)][0], image:base.image||null,
         level: state.level, job: state.job, world: state.world,
         done, total, bossDone, bossTotal, bosses, bossesMonthly, states, earnedTotal, earnedDone,
+        weeklyEarnedTotal, weeklyEarnedDone, monthlyEarnedTotal, monthlyEarnedDone,
         weeklyBossClearCount, weeklyBossClearLimitCount, weeklyBossCapped,
         epicRaw: epicVisible.map(w=>({ name:w.content_name, done: contentDoneText(w)==='완료' })),
         monsterPark: monsterParkRaw ? { now:monsterParkRaw.now_count, max:monsterParkRaw.max_count } : null,
@@ -471,14 +518,32 @@
       img.onerror = ()=>{ avatarCropCache.set(url, false); };
       img.src = url;
     }
+    // 직업명 → 근본 5직업군 매핑 (넥슨 API는 세부 전직명만 주고 직업군을 안 줘서 직접 매핑한다).
+    // 잘 안 알려진/특수 전직(제로, 키네시스 등)은 'other'로 빠질 수 있음 - 색만 다를 뿐 기능엔 지장 없음.
+    const JOB_CATEGORY_COLORS = { warrior:'#c9503f', mage:'#4f7fd6', archer:'#3e9f66', thief:'#8a5fc9', pirate:'#8c8c8c', other:'#3a3a3a' };
+    const JOB_CATEGORY_MAP = {
+      '히어로':'warrior','팔라딘':'warrior','다크나이트':'warrior','소울마스터':'warrior','미하일':'warrior',
+      '데몬슬레이어':'warrior','카이저':'warrior','아란':'warrior','하야토':'warrior','아델':'warrior','렌':'warrior',
+      '아크메이지(불,독)':'mage','아크메이지(썬,콜)':'mage','비숍':'mage','플레임위자드':'mage','루미너스':'mage',
+      '에반':'mage','배틀메이지':'mage','라라':'mage','키네시스':'mage','레테':'mage',
+      '보우마스터':'archer','신궁':'archer','패스파인더':'archer','메르세데스':'archer','와일드헌터':'archer',
+      '카데나':'archer','아라':'archer',
+      '나이트로드':'thief','섀도어':'thief','듀얼블레이드':'thief','나이트워커':'thief','팬텀':'thief','호영':'thief','카인':'thief',
+      '바이퍼':'pirate','캡틴':'pirate','캐논마스터':'pirate','데몬어벤저':'pirate','블래스터':'pirate','스트라이커':'pirate','은월':'pirate',
+    };
+    function jobCategoryColor(job){ return JOB_CATEGORY_COLORS[JOB_CATEGORY_MAP[job]||'other']; }
+    // 홈 탭(스위처/선택 패널) 전용 - 직업군 색을 배경으로 깔고, 캐릭터 이미지가 있으면 그 위에 얹는다.
     function avatarBgAttr(c){
-      if(!c.image) return '';
+      const color = `background-color:${jobCategoryColor(c.job)}`;
+      if(!c.image) return ` style="${color}"`;
       requestAvatarCrop(c.image);
       const crop = avatarCropCache.get(c.image);
       const cropStyle = (crop && crop!==false) ? crop : '';
-      return ` style="background-image:url('${c.image}');${cropStyle}"`;
+      return ` style="${color};background-image:url('${c.image}');${cropStyle}"`;
     }
     function avatarText(c){ return c.image ? '' : c.key; }
+    // 캐릭터탭/설정 전용 - 이미지 없이 직업군 색 + 글자만.
+    function avatarColorAttr(c){ return ` style="background-color:${jobCategoryColor(c.job)}"`; }
 
     // maplescouter.com 환산주스탯 바로가기 (홈 탭, 선택된 캐릭터 기준)
     const MAPLESCOUTER_LINKS = [
@@ -516,29 +581,25 @@
       renderAll();
       scheduleAutoSave();
     }
-    function charCard(c, compact=false, idx=0){
+    function charCard(c, idx=0){
       const pct=c.total?Math.round(c.done/c.total*100):0;
       const isActive=idx===selectedIndex;
       const el=document.createElement('div');
       el.className='char-card'+(isActive?' active':'');
       el.innerHTML=`
-        <div class="char-main">
-          <div class="avatar" aria-hidden="true"${avatarBgAttr(c)}>${avatarText(c)}</div>
-          <div class="char-open" role="button" tabindex="0" aria-label="${c.nick} 스케줄러 상세 보기">
-            <div class="name-row">
-              <div class="nick-trigger static-nick"><span class="nickname">${c.nick}${c.loading?' <span class="spin">↻</span>':''}</span></div>
-              <div class="count">${c.done}/${c.total}</div>
-            </div>
-            <div class="mini-meta">Lv. ${c.level} ${c.job} · ${c.world||'-'}</div>
-            <div class="bar"><div class="bar-fill" style="width:${pct}%"></div></div>
+        <div class="char-open" role="button" tabindex="0" aria-label="${c.nick} 스케줄러 상세 보기">
+          <div class="char-line">
+            <span class="nickname">${c.nick}${c.loading?' <span class="spin">↻</span>':''}</span>
+            <span class="char-sub">Lv.${c.level} ${c.job} · ${c.world||'-'}</span>
+            <span class="count">${c.done}/${c.total}</span>
           </div>
+          <div class="bar thin"><div class="bar-fill" style="width:${pct}%"></div></div>
         </div>
-        ${compact?'' : `<div class="task-chips">${c.states.length? c.states.map(s=>`<span class="chip ${statusClassByRatio(s.done,s.total)}">${s.title} ${s.done}/${s.total}</span>`).join('') : '<span class="chip state-none">등록된 항목 없음</span>'}</div>`}
+        <div class="task-chips">${c.states.length? c.states.map(s=>`<span class="chip ${statusClassByRatio(s.done,s.total)}">${s.title} ${s.done}/${s.total}</span>`).join('') : '<span class="chip state-none">등록된 항목 없음</span>'}</div>
       `;
       const opener=el.querySelector('.char-open');
       opener.addEventListener('click',()=>{selectedIndex=idx;renderAll();openSheet(c);});
       opener.addEventListener('keydown',(e)=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();selectedIndex=idx;renderAll();openSheet(c);}});
-      if(compact){el.querySelector('.avatar').addEventListener('click',(e)=>{e.stopPropagation();selectedIndex=idx;renderAll();openSheet(c);});}
       return el;
     }
     // 홈 탭 전용: 팝업 대신 눌렀을 때 인라인으로 펼쳐지는 카드. 필터(전체/보스/퀘스트/수로)에 따라 보이는 항목이 달라진다.
@@ -602,6 +663,42 @@
       panel.querySelector('.selected-panel-head').addEventListener('click',()=>openSheet(c));
     }
 
+    // 퀘스트 필터 전용: 캐릭터별 카드가 아니라 몬파/일퀘/주간퀘/에픽던전 콜아웃별로 전체 캐릭터를 모아서 보여준다.
+    const QUEST_FLAT_CATEGORIES = [ {key:'monsterpark',title:'몬파'}, {key:'daily',title:'일퀘'}, {key:'weekly',title:'주간퀘'}, {key:'epic',title:'에픽던전'} ];
+    function buildQuestFlatData(derived){
+      const buckets = { monsterpark:[], daily:[], weekly:[], epic:[] };
+      derived.forEach(c=>{
+        c.states.forEach(s=>{
+          let bucketKey=null;
+          if(s.title==='주간퀘') bucketKey='weekly';
+          else if(s.title==='에픽던전') bucketKey='epic';
+          if(s.title==='일퀘'){
+            s.items.forEach(([name,state,,,,hidden])=>{
+              if(hidden) return;
+              buckets[name.includes('몬스터파크')?'monsterpark':'daily'].push({nick:c.nick,name,state});
+            });
+          } else if(bucketKey){
+            s.items.forEach(([name,state,,,,hidden])=>{ if(!hidden) buckets[bucketKey].push({nick:c.nick,name,state}); });
+          }
+        });
+      });
+      Object.values(buckets).forEach(list=>list.sort((a,b)=>a.nick.localeCompare(b.nick,'ko')));
+      return buckets;
+    }
+    function renderQuestFlatView(derived){
+      const buckets = buildQuestFlatData(derived);
+      return QUEST_FLAT_CATEGORIES.map(({key,title})=>{
+        const list = buckets[key];
+        if(!list.length) return '';
+        let rowsHtml=''; let prevNick=null;
+        list.forEach(item=>{
+          if(prevNick!==null && item.nick!==prevNick) rowsHtml+='<div class="quest-divider"></div>';
+          rowsHtml+=`<div class="quest-row"><div class="quest-row-text"><b>${item.nick}</b> · ${item.name}</div><span class="badge ${statusClassByText(item.state)}">${item.state}</span></div>`;
+          prevNick=item.nick;
+        });
+        return `<div class="state-card"><div class="state-title" style="margin-bottom:6px">${title}</div>${rowsHtml}</div>`;
+      }).join('');
+    }
     function renderCharacters(){
       const home=document.getElementById('homeCharList'), list=document.getElementById('characterList'); home.innerHTML=''; list.innerHTML='';
       if(!characters.length){
@@ -613,7 +710,14 @@
         return;
       }
       const derived=characters.map(deriveChar);
-      derived.forEach((c,i)=>{home.appendChild(homeCharCard(c,i)); list.appendChild(charCard(c,false,i));});
+      if(homeFilter==='quest'){
+        home.innerHTML = renderQuestFlatView(derived) || '<div class="api-note">등록된 퀘스트 항목이 없어요.</div>';
+      } else if(homeFilter==='boss'){
+        home.innerHTML = renderBossFlatView(derived) || '<div class="api-note">등록된 보스가 없어요.</div>';
+      } else {
+        derived.forEach((c,i)=>{home.appendChild(homeCharCard(c,i));});
+      }
+      derived.forEach((c,i)=>{list.appendChild(charCard(c,i));});
 
       let filteredDone=0, filteredTotal=0;
       derived.forEach(c=>{ const g=filteredStates(c,homeFilter); filteredDone+=g.reduce((a,s)=>a+s.done,0); filteredTotal+=g.reduce((a,s)=>a+s.total,0); });
@@ -629,6 +733,41 @@
       });
     }
     let bossEditMode=false;
+    // 보스탭도 퀘스트 필터처럼 캐릭터별 카드가 아니라 주간보스/월간보스 콜아웃별로 전체 캐릭터를 모아서 보여준다.
+    function buildBossFlatData(derived){
+      const buckets = { weekly:[], monthly:[] };
+      derived.forEach(c=>{
+        c.bosses.forEach(([name,state,price,contentName,difficulty,hidden])=>{ buckets.weekly.push({nick:c.nick,charId:c.id,name,state,price,contentName,difficulty,hidden}); });
+        c.bossesMonthly.forEach(([name,state,price,contentName,difficulty,hidden])=>{ buckets.monthly.push({nick:c.nick,charId:c.id,name,state,price,contentName,difficulty,hidden}); });
+      });
+      Object.values(buckets).forEach(list=>list.sort((a,b)=>a.nick.localeCompare(b.nick,'ko')));
+      return buckets;
+    }
+    function bossFlatRowHTML(item){
+      if(item.hidden && !bossEditMode) return '';
+      const btn = bossEditMode
+        ? (item.hidden
+          ? `<button type="button" class="remove-char" data-enable-char="${item.charId}" data-enable-name="${item.contentName}" data-enable-diff="${item.difficulty}" title="다시 표시">+</button>`
+          : `<button type="button" class="remove-char" data-disable-char="${item.charId}" data-disable-name="${item.contentName}" data-disable-diff="${item.difficulty}" title="이 보스 비활성화">−</button>`)
+        : '';
+      return `<div class="quest-row"${item.hidden?' style="opacity:.5"':''}><div class="quest-row-text"><b>${item.nick}</b> · ${item.name}</div><div style="display:flex;align-items:center;gap:7px;flex:none"><span class="boss-price">${item.price}</span><span class="badge ${statusClassByText(item.state)}">${item.state}</span>${btn}</div></div>`;
+    }
+    function renderBossFlatView(derived){
+      const buckets = buildBossFlatData(derived);
+      return [{key:'weekly',title:'주간보스'},{key:'monthly',title:'월간보스'}].map(({key,title})=>{
+        const list = buckets[key];
+        let rowsHtml=''; let prevNick=null;
+        list.forEach(item=>{
+          const rowHtml = bossFlatRowHTML(item);
+          if(!rowHtml) return;
+          if(prevNick!==null && item.nick!==prevNick) rowsHtml+='<div class="quest-divider"></div>';
+          rowsHtml+=rowHtml;
+          prevNick=item.nick;
+        });
+        if(!rowsHtml) return '';
+        return `<div class="state-card"><div class="state-title" style="margin-bottom:6px">${title}</div>${rowsHtml}</div>`;
+      }).join('');
+    }
     const collapsedBossCards = new Set();
     function bossRowHTML(charId,name,state,price,contentName,difficulty,hidden){
       if(hidden && !bossEditMode) return '';
@@ -637,7 +776,7 @@
           ? `<button type="button" class="remove-char" data-enable-char="${charId}" data-enable-name="${contentName}" data-enable-diff="${difficulty}" title="다시 표시">+</button>`
           : `<button type="button" class="remove-char" data-disable-char="${charId}" data-disable-name="${contentName}" data-disable-diff="${difficulty}" title="이 보스 비활성화">−</button>`)
         : '';
-      return `<div class="boss-row"${hidden?' style="opacity:.5"':''}><div><div class="boss-title">${name}</div><div class="boss-sub"><span class="state-tag ${chipClassByText(state)}" style="display:inline-block;margin-top:3px">${state}</span></div></div><div style="display:flex;align-items:center;gap:8px"><div class="boss-price">${price}</div>${btn}</div></div>`;
+      return `<div class="boss-row"${hidden?' style="opacity:.5"':''}><div class="boss-title">${name}</div><div style="display:flex;align-items:center;gap:8px"><div class="boss-price">${price}</div><span class="state-tag ${chipClassByText(state)}">${state}</span>${btn}</div></div>`;
     }
     function renderBossDashboard(){
       const dash=document.getElementById('bossDashboard'); dash.innerHTML='';
@@ -645,25 +784,25 @@
       if(editBtn) editBtn.classList.toggle('open', bossEditMode);
       if(!characters.length){
         dash.innerHTML='<div class="api-note">캐릭터가 없어요. 설정 탭에서 추가해보세요.</div>';
-        document.getElementById('bossEarnTotal').textContent='0';
-        document.getElementById('bossEarnDone').textContent='0';
+        document.getElementById('bossEarnWeekly').textContent='0 · 0';
+        document.getElementById('bossEarnMonthly').textContent='0 · 0';
         renderBossExtras();
         return;
       }
-      let earnedTotal=0, earnedDone=0;
-      characters.forEach((base,i)=>{
-        const c=deriveChar(base);
-        earnedTotal+=c.earnedTotal; earnedDone+=c.earnedDone;
+      let weeklyEarnedTotal=0, weeklyEarnedDone=0, monthlyEarnedTotal=0, monthlyEarnedDone=0;
+      const derived = characters.map(deriveChar);
+      derived.forEach((c,i)=>{
+        weeklyEarnedTotal+=c.weeklyEarnedTotal; weeklyEarnedDone+=c.weeklyEarnedDone;
+        monthlyEarnedTotal+=c.monthlyEarnedTotal; monthlyEarnedDone+=c.monthlyEarnedDone;
         const collapsed = collapsedBossCards.has(c.id);
         const card=document.createElement('div'); card.className='boss-char-card';
         card.innerHTML=`
           <div class="boss-head">
-            <div class="boss-head-info" role="button" tabindex="0"><div class="boss-char-name">${c.nick}</div><div class="boss-sub">Lv. ${c.level} ${c.job} · ${c.weeklyBossClearLimitCount!=null?`이번 주 처치 ${c.weeklyBossClearCount}/${c.weeklyBossClearLimitCount}`:`${c.bossDone}/${c.bossTotal}`}${c.weeklyBossCapped?' · 한도 도달':''}</div></div>
+            <div class="boss-head-info" role="button" tabindex="0"><div class="boss-char-name">${c.nick}</div><div class="boss-sub">Lv. ${c.level} ${c.job} · ${c.weeklyBossClearLimitCount>0?`이번 주 처치 ${c.weeklyBossClearCount}/${c.weeklyBossClearLimitCount}`:`${c.bossDone}/${c.bossTotal}`}${c.weeklyBossCapped?' · 한도 도달':''}</div></div>
             <button class="boss-collapse-btn${collapsed?'':' open'}" type="button" data-collapse-char="${c.id}" aria-label="${c.nick} 접기/펼치기">⌄</button>
           </div>
           <div class="boss-body${collapsed?'':' show'}">
             <div class="boss-list">${c.bosses.map(b=>bossRowHTML(c.id,...b)).join('')}</div>
-            ${c.bossesMonthly.length?`<div class="boss-sub" style="margin-top:12px;font-weight:950;color:var(--ink)">월간보스</div><div class="boss-list">${c.bossesMonthly.map(b=>bossRowHTML(c.id,...b)).join('')}</div>`:''}
           </div>
         `;
         const selectRow=card.querySelector('.boss-head-info');
@@ -671,8 +810,25 @@
         selectRow.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();selectedIndex=i;renderAll();}});
         dash.appendChild(card);
       });
-      document.getElementById('bossEarnTotal').textContent=money(earnedTotal);
-      document.getElementById('bossEarnDone').textContent=money(earnedDone);
+      // 월간보스는 캐릭터별 카드에 안 흩뿌리고, 전체 캐릭터를 모아 맨 아래 한 번에 보여준다.
+      const monthlyBuckets = buildBossFlatData(derived).monthly;
+      if(monthlyBuckets.length){
+        let rowsHtml=''; let prevNick=null;
+        monthlyBuckets.forEach(item=>{
+          const rowHtml = bossFlatRowHTML(item);
+          if(!rowHtml) return;
+          if(prevNick!==null && item.nick!==prevNick) rowsHtml+='<div class="quest-divider"></div>';
+          rowsHtml+=rowHtml;
+          prevNick=item.nick;
+        });
+        if(rowsHtml){
+          const monthlyCard=document.createElement('div'); monthlyCard.className='state-card';
+          monthlyCard.innerHTML=`<div class="state-title" style="margin-bottom:6px">월간보스</div>${rowsHtml}`;
+          dash.appendChild(monthlyCard);
+        }
+      }
+      document.getElementById('bossEarnWeekly').textContent=`${money(weeklyEarnedTotal)} · ${money(weeklyEarnedDone)}`;
+      document.getElementById('bossEarnMonthly').textContent=`${money(monthlyEarnedTotal)} · ${money(monthlyEarnedDone)}`;
       renderBossExtras();
     }
     function renderBossExtras(){
@@ -708,7 +864,7 @@
         const shown = base.showInSwitcher!==false;
         row.innerHTML=`
           <div class="char-main">
-            <div class="avatar"${avatarBgAttr(c)}>${avatarText(c)}</div>
+            <div class="avatar"${avatarColorAttr(c)}>${c.key}</div>
             <div class="char-info">
               <div class="name-row"><div class="nickname">${c.nick}</div></div>
               <div class="mini-meta">Lv. ${c.level} ${c.job} · ${c.world||'-'}</div>
