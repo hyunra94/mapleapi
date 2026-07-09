@@ -436,18 +436,29 @@
       const dailyRegistered = (state.dailyContents||[]).filter(d=>truthy(d.registration_flag));
       const weeklyRawRegistered = (state.weeklyContents||[]).filter(w=>truthy(w.registration_flag));
       // 넥슨이 "지하 수로"처럼 띄어쓰기를 다르게 줄 수도 있어서 공백 무시하고 매칭한다.
-      const isEpicContent = w => w.content_name && normalizeBossKey(w.content_name).includes('에픽던전');
+      // 넥슨 API가 "에픽던전"이란 접두어 없이 하이마운틴/앵글러 컴퍼니/악몽선경을 그냥 이름 그대로 줘서,
+      // 부분 문자열 매칭만으로는 하나도 안 걸린다 - 알려진 이름 3개를 직접 매칭한다.
+      const KNOWN_EPIC_DUNGEONS = new Set(['하이마운틴','앵글러 컴퍼니','악몽선경']);
+      const isEpicContent = w => w.content_name && (KNOWN_EPIC_DUNGEONS.has(w.content_name) || normalizeBossKey(w.content_name).includes('에픽던전'));
       const isUndergroundContent = w => w.content_name && normalizeBossKey(w.content_name).includes('지하수로');
       const epicRegistered = weeklyRawRegistered.filter(isEpicContent);
       const undergroundRegistered = weeklyRawRegistered.filter(isUndergroundContent);
       const weeklyRegistered = weeklyRawRegistered.filter(w=>!isEpicContent(w) && !isUndergroundContent(w));
 
+      // 몬스터파크는 "클리어" 개념이 아니라 입장 횟수 소진 개념이라, quest_state가 같이 와도
+      // 계속 0으로 남아있는 경우가 있다 - 그래서 몬스터파크는 quest_state를 무시하고 now/max로만 판단한다.
+      const MONSTER_PARK_FREE_RUNS = 2; // 무료 입장은 2회까지라, 그 이상(유료)까지 다 안 돌아도 2회만 돌면 완료로 취급한다.
       function contentDoneText(item){
+        const isMonsterPark = item.content_name && normalizeBossKey(item.content_name).includes('몬스터파크');
+        if(isMonsterPark) return item.now_count>=MONSTER_PARK_FREE_RUNS ? '완료' : (item.now_count>0 ? '진행중' : '미시작');
         if(item.quest_state!=null) return item.quest_state==='2' ? '완료' : (item.quest_state==='1' ? '진행중' : '미시작');
         return (item.max_count>0 && item.now_count>=item.max_count) ? '완료' : (item.now_count>0 ? '진행중' : '미시작');
       }
       // 몬스터파크/지하수로처럼 점수제인 콘텐츠는 "3/5" 형태로 실제 점수도 같이 보여준다.
+      // 몬스터파크는 캐릭터별 줄에 점수를 안 보여주고(맨 위 서버 합계에만 표기), 나머지 점수제 콘텐츠만 표기한다.
       function scoreLabel(item){
+        const isMonsterPark = item.content_name && normalizeBossKey(item.content_name).includes('몬스터파크');
+        if(isMonsterPark) return '';
         if(item.quest_state!=null) return '';
         if(item.max_count>0) return `${item.now_count}/${item.max_count}`;
         return '';
@@ -857,12 +868,13 @@
       if(!mpWrap) return;
       if(!characters.length){ mpWrap.innerHTML=''; return; }
       const derived=characters.map(deriveChar);
-      // 몬스터파크 입장 횟수는 캐릭터마다 따로 카운트되므로, 같은 서버의 등록 캐릭터들끼리 합산해서 보여준다.
+      // 몬스터파크 입장 횟수는 캐릭터가 아니라 서버당(계정 공유) 고정 한도(예: 14회)라서 합산하면 안 된다.
+      // 캐릭터마다 새로고침 시점이 달라 now가 서로 다르게 캐싱돼 있을 수 있어서, 그중 가장 진행이 많이 된 값을 대표로 쓴다.
       const byWorld=new Map();
       derived.forEach(c=>{
         if(!c.monsterPark || !c.world || c.world==='-') return;
-        const existing = byWorld.get(c.world) || {now:0,max:0};
-        byWorld.set(c.world, { now: existing.now + c.monsterPark.now, max: existing.max + c.monsterPark.max });
+        const existing = byWorld.get(c.world);
+        if(!existing || c.monsterPark.now > existing.now) byWorld.set(c.world, c.monsterPark);
       });
       const worldEntries=[...byWorld.entries()];
       mpWrap.innerHTML = worldEntries.length ? `<div class="summary-card"><div class="metric-label">서버별 몬스터파크 클리어</div><div class="task-chips" style="margin-top:10px">${worldEntries.map(([w,v])=>`<span class="chip state-doing">${w} ${v.now}/${v.max}</span>`).join('')}</div></div>` : '';
