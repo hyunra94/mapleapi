@@ -255,7 +255,6 @@
     let disabledItems = loadDisabledItems();
     let selectedIndex = 0;
     let homeFilter = 'boss';
-    const expandedHomeCards = new Set();
     const FILTER_GROUPS = {
       all: ['주간보스','월간보스','일퀘','주간퀘','에픽던전','지하수로'],
       boss: ['주간보스','월간보스'],
@@ -265,11 +264,6 @@
     function filteredStates(c, filter){
       const allowed = FILTER_GROUPS[filter]||FILTER_GROUPS.all;
       return c.states.filter(s=>allowed.includes(s.title));
-    }
-    function toggleHomeExpand(id, idx){
-      selectedIndex = idx;
-      if(expandedHomeCards.has(id)) expandedHomeCards.delete(id); else expandedHomeCards.add(id);
-      renderAll();
     }
     const loadingIds = new Set();
 
@@ -424,20 +418,29 @@
 
       const dailyRegistered = (state.dailyContents||[]).filter(d=>truthy(d.registration_flag));
       const weeklyRawRegistered = (state.weeklyContents||[]).filter(w=>truthy(w.registration_flag));
-      const epicRegistered = weeklyRawRegistered.filter(w=>w.content_name && w.content_name.includes('에픽던전'));
-      const undergroundRegistered = weeklyRawRegistered.filter(w=>w.content_name && w.content_name.includes('지하수로'));
-      const weeklyRegistered = weeklyRawRegistered.filter(w=>!(w.content_name && (w.content_name.includes('에픽던전')||w.content_name.includes('지하수로'))));
+      // 넥슨이 "지하 수로"처럼 띄어쓰기를 다르게 줄 수도 있어서 공백 무시하고 매칭한다.
+      const isEpicContent = w => w.content_name && normalizeBossKey(w.content_name).includes('에픽던전');
+      const isUndergroundContent = w => w.content_name && normalizeBossKey(w.content_name).includes('지하수로');
+      const epicRegistered = weeklyRawRegistered.filter(isEpicContent);
+      const undergroundRegistered = weeklyRawRegistered.filter(isUndergroundContent);
+      const weeklyRegistered = weeklyRawRegistered.filter(w=>!isEpicContent(w) && !isUndergroundContent(w));
 
       function contentDoneText(item){
         if(item.quest_state!=null) return item.quest_state==='2' ? '완료' : (item.quest_state==='1' ? '진행중' : '미시작');
         return (item.max_count>0 && item.now_count>=item.max_count) ? '완료' : (item.now_count>0 ? '진행중' : '미시작');
+      }
+      // 몬스터파크/지하수로처럼 점수제인 콘텐츠는 "3/5" 형태로 실제 점수도 같이 보여준다.
+      function scoreLabel(item){
+        if(item.quest_state!=null) return '';
+        if(item.max_count>0) return `${item.now_count}/${item.max_count}`;
+        return '';
       }
       function toStateGroup(title, registeredItems, category){
         const visible = registeredItems.filter(i=>!disabled(category, i.content_name));
         const doneCount = visible.filter(i=>contentDoneText(i)==='완료').length;
         return {
           title, done:doneCount, total:visible.length,
-          items: registeredItems.map(i=>[i.content_name, contentDoneText(i), category, i.content_name, '', disabled(category,i.content_name)]),
+          items: registeredItems.map(i=>[i.content_name, contentDoneText(i), category, i.content_name, '', disabled(category,i.content_name), scoreLabel(i)]),
         };
       }
       const states = [
@@ -459,7 +462,7 @@
       const monthlyEarnedDone = priceSum(monthlyBossVisible.filter(b=>truthy(b.complete_flag)));
       const earnedTotal = weeklyEarnedTotal + monthlyEarnedTotal;
       const earnedDone = weeklyEarnedDone + monthlyEarnedDone;
-      const monsterParkRaw = dailyRegistered.find(d=>d.content_name && d.content_name.includes('몬스터파크'));
+      const monsterParkRaw = dailyRegistered.find(d=>d.content_name && normalizeBossKey(d.content_name).includes('몬스터파크'));
       const epicVisible = epicRegistered.filter(w=>!disabled('epic',w.content_name));
 
       return {
@@ -602,44 +605,6 @@
       opener.addEventListener('keydown',(e)=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();selectedIndex=idx;renderAll();openSheet(c);}});
       return el;
     }
-    // 홈 탭 전용: 팝업 대신 눌렀을 때 인라인으로 펼쳐지는 카드. 필터(전체/보스/퀘스트/수로)에 따라 보이는 항목이 달라진다.
-    function homeCharCard(c, idx){
-      const groups = filteredStates(c, homeFilter);
-      const done = groups.reduce((a,s)=>a+s.done,0);
-      const total = groups.reduce((a,s)=>a+s.total,0);
-      const pct = total?Math.round(done/total*100):0;
-      const isActive = idx===selectedIndex;
-      const expanded = expandedHomeCards.has(c.id);
-      const el=document.createElement('div');
-      el.className='char-card'+(isActive?' active':'');
-      el.innerHTML=`
-        <div class="char-main">
-          <div class="avatar" aria-hidden="true"${avatarBgAttr(c)}>${avatarText(c)}</div>
-          <div class="char-open" role="button" tabindex="0" aria-label="${c.nick} 항목 펼치기">
-            <div class="name-row">
-              <div class="nick-trigger static-nick"><span class="nickname">${c.nick}${c.loading?' <span class="spin">↻</span>':''}</span></div>
-              <div class="count">${done}/${total}</div>
-            </div>
-            <div class="mini-meta">Lv. ${c.level} ${c.job} · ${c.world||'-'}</div>
-            <div class="bar"><div class="bar-fill" style="width:${pct}%"></div></div>
-          </div>
-          <button class="expand-btn${expanded?' open':''}" type="button" aria-label="펼치기">⌄</button>
-        </div>
-        <div class="link-panel${expanded?' show':''}">
-          ${groups.length ? groups.map(s=>{
-            const spct=s.total?Math.round(s.done/s.total*100):0;
-            return `<div class="state-card" style="margin-bottom:8px"><div class="state-top"><div><div class="state-title">${s.title}</div><div class="bar"><div class="bar-fill" style="width:${spct}%"></div></div></div><div class="state-value">${s.done}/${s.total}</div></div><div class="state-list">${s.items.map(([name,state])=>`<div class="state-item"><b>${name}</b><span class="badge ${statusClassByText(state)}">${state}</span></div>`).join('')}</div></div>`;
-          }).join('') : '<div class="api-note">등록된 항목이 없어요.</div>'}
-        </div>
-      `;
-      const toggle=()=>toggleHomeExpand(c.id, idx);
-      const opener=el.querySelector('.char-open');
-      opener.addEventListener('click', toggle);
-      opener.addEventListener('keydown',(e)=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle();}});
-      el.querySelector('.avatar').addEventListener('click',(e)=>{e.stopPropagation();toggle();});
-      el.querySelector('.expand-btn').addEventListener('click',(e)=>{e.stopPropagation();toggle();});
-      return el;
-    }
     function renderSelectedPanel(){
       const panel=document.getElementById('selectedPanel');
       if(!panel) return;
@@ -673,16 +638,16 @@
           if(s.title==='주간퀘') bucketKey='weekly';
           else if(s.title==='에픽던전') bucketKey='epic';
           if(s.title==='일퀘'){
-            s.items.forEach(([name,state,,,,hidden])=>{
+            s.items.forEach(([name,state,,,,hidden,score])=>{
               if(hidden) return;
-              buckets[name.includes('몬스터파크')?'monsterpark':'daily'].push({nick:c.nick,name,state});
+              buckets[normalizeBossKey(name).includes('몬스터파크')?'monsterpark':'daily'].push({nick:c.nick,name,state,score});
             });
           } else if(bucketKey){
-            s.items.forEach(([name,state,,,,hidden])=>{ if(!hidden) buckets[bucketKey].push({nick:c.nick,name,state}); });
+            s.items.forEach(([name,state,,,,hidden,score])=>{ if(!hidden) buckets[bucketKey].push({nick:c.nick,name,state,score}); });
           }
         });
       });
-      Object.values(buckets).forEach(list=>list.sort((a,b)=>a.nick.localeCompare(b.nick,'ko')));
+      // 가나다순이 아니라 설정에서 캐릭터를 등록/추가한 순서를 그대로 따른다 (derived 배열 순서 유지).
       return buckets;
     }
     function renderQuestFlatView(derived){
@@ -693,11 +658,27 @@
         let rowsHtml=''; let prevNick=null;
         list.forEach(item=>{
           if(prevNick!==null && item.nick!==prevNick) rowsHtml+='<div class="quest-divider"></div>';
-          rowsHtml+=`<div class="quest-row"><div class="quest-row-text"><b>${item.nick}</b> · ${item.name}</div><span class="badge ${statusClassByText(item.state)}">${item.state}</span></div>`;
+          rowsHtml+=`<div class="quest-row"><div class="quest-row-text"><b>${item.nick}</b> · ${item.name}</div><div style="display:flex;align-items:center;gap:7px;flex:none">${item.score?`<span class="boss-price">${item.score}</span>`:''}<span class="badge ${statusClassByText(item.state)}">${item.state}</span></div></div>`;
           prevNick=item.nick;
         });
         return `<div class="state-card"><div class="state-title" style="margin-bottom:6px">${title}</div>${rowsHtml}</div>`;
       }).join('');
+    }
+    function renderUndergroundFlatView(derived){
+      const list=[];
+      derived.forEach(c=>{
+        const s=c.states.find(s=>s.title==='지하수로');
+        if(!s) return;
+        s.items.forEach(([name,state,,,,hidden,score])=>{ if(!hidden) list.push({nick:c.nick,name,state,score}); });
+      });
+      if(!list.length) return '';
+      let rowsHtml=''; let prevNick=null;
+      list.forEach(item=>{
+        if(prevNick!==null && item.nick!==prevNick) rowsHtml+='<div class="quest-divider"></div>';
+        rowsHtml+=`<div class="quest-row"><div class="quest-row-text"><b>${item.nick}</b> · ${item.name}</div><div style="display:flex;align-items:center;gap:7px;flex:none">${item.score?`<span class="boss-price">${item.score}</span>`:''}<span class="badge ${statusClassByText(item.state)}">${item.state}</span></div></div>`;
+        prevNick=item.nick;
+      });
+      return `<div class="state-card"><div class="state-title" style="margin-bottom:6px">지하수로</div>${rowsHtml}</div>`;
     }
     function renderCharacters(){
       const home=document.getElementById('homeCharList'), list=document.getElementById('characterList'); home.innerHTML=''; list.innerHTML='';
@@ -714,8 +695,8 @@
         home.innerHTML = renderQuestFlatView(derived) || '<div class="api-note">등록된 퀘스트 항목이 없어요.</div>';
       } else if(homeFilter==='boss'){
         home.innerHTML = renderBossFlatView(derived) || '<div class="api-note">등록된 보스가 없어요.</div>';
-      } else {
-        derived.forEach((c,i)=>{home.appendChild(homeCharCard(c,i));});
+      } else if(homeFilter==='underground'){
+        home.innerHTML = renderUndergroundFlatView(derived) || '<div class="api-note">등록된 지하수로 항목이 없어요.</div>';
       }
       derived.forEach((c,i)=>{list.appendChild(charCard(c,i));});
 
@@ -740,7 +721,7 @@
         c.bosses.forEach(([name,state,price,contentName,difficulty,hidden])=>{ buckets.weekly.push({nick:c.nick,charId:c.id,name,state,price,contentName,difficulty,hidden}); });
         c.bossesMonthly.forEach(([name,state,price,contentName,difficulty,hidden])=>{ buckets.monthly.push({nick:c.nick,charId:c.id,name,state,price,contentName,difficulty,hidden}); });
       });
-      Object.values(buckets).forEach(list=>list.sort((a,b)=>a.nick.localeCompare(b.nick,'ko')));
+      // 가나다순이 아니라 설정에서 캐릭터를 등록/추가한 순서를 그대로 따른다 (derived 배열 순서 유지).
       return buckets;
     }
     function bossFlatRowHTML(item){
